@@ -55,4 +55,23 @@ public class Cow {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    @Override
+    public String toString() {
+        return "Cow{" +
+                "name='" + name + '\'' +
+                ", number='" + number + '\'' +
+                ", birth_date=" + birth_date +
+                ", mother_number='" + mother_number + '\'' +
+                ", father_number='" + father_number + '\'' +
+                ", sex='" + sex + '\'' +
+                ", color='" + color + '\'' +
+                ", active=" + active +
+                ", bloodTests=" + bloodTests +
+                ", comments=" + comments +
+                ", dewormings=" + dewormings +
+                ", estruses=" + estruses +
+                ", vaccines=" + vaccines +
+                '}';
+    }
 }

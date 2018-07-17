@@ -36,7 +36,7 @@ public class CowController {
                 .body(saved);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<Cow> getAllCows() {
         return cowService.findAll();
     }
