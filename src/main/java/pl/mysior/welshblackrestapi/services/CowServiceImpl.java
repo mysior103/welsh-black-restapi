@@ -11,13 +11,9 @@ import java.util.Optional;
 @Service
 public class CowServiceImpl implements CowService {
 
-    final
+    @Autowired
     CowRepository cowRepository;
 
-    @Autowired
-    public CowServiceImpl(CowRepository cowRepository) {
-        this.cowRepository = cowRepository;
-    }
 
 
     @Override

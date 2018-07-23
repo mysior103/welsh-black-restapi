@@ -27,6 +27,7 @@ public class Cow {
     private List<Vaccine> vaccines;
 
     public Cow(String number, String name, Calendar birth_date, String mother_number, String father_number, String sex, String color, boolean active) {
+
         this.name = name;
         this.number = number;
         this.birth_date = birth_date;

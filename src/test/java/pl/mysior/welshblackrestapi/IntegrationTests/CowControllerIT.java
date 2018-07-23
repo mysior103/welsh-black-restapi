@@ -1,19 +1,24 @@
 package pl.mysior.welshblackrestapi.IntegrationTests;
 
-import com.mongodb.Mongo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.repository.CowRepository;
 import pl.mysior.welshblackrestapi.services.CowService;
+import pl.mysior.welshblackrestapi.services.CowServiceImpl;
 
 import java.util.GregorianCalendar;
 
 @ActiveProfiles("test")
+@EnableAutoConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataMongoTest
 public class CowControllerIT {
@@ -21,6 +26,12 @@ public class CowControllerIT {
     private Cow cow;
     @Autowired
     private CowService cowService;
+
+    @Autowired
+    private CowRepository cowRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Test
     public void save() {
