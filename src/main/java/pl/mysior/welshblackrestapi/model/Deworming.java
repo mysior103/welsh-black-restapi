@@ -9,8 +9,7 @@ import java.util.Calendar;
 @Data
 @Document
 public class Deworming {
-    @Id
-    private String id;
+
     private Calendar dewormingDate;
     private int quantity;
 

@@ -16,7 +16,6 @@ public class CowServiceImpl implements CowService {
     CowRepository cowRepository;
 
 
-
     @Override
     public Cow save(Cow cow) {
         cowRepository.save(cow);
@@ -30,23 +29,23 @@ public class CowServiceImpl implements CowService {
 
     @Override
     public Cow findByNumber(String number) {
-        return cowRepository.findById(number).orElseThrow(() -> new MongoException(number));
-//        Optional<Cow> cowOptional = cowRepository.findById(number);
-//        if(cowOptional.isPresent()){
-//            return cowOptional.get();
-//        }else{
-//            return null;
-//        }
+        Optional<Cow> cowOptional = cowRepository.findById(number);
+        if (cowOptional.isPresent()) {
+            return cowOptional.get();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Cow deleteByNumber(String number) {
+
         Optional<Cow> cowOptional = cowRepository.findById(number);
-        if(cowOptional.isPresent()){
+        if (cowOptional.isPresent()) {
             cowRepository.deleteById(number);
             return cowOptional.get();
-        }else{
-            return null;
+        } else {
+            throw new MongoException("Couldn't find " + number);
         }
     }
 }

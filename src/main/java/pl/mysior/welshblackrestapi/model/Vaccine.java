@@ -9,8 +9,6 @@ import java.util.Calendar;
 @Data
 @Document
 public class Vaccine {
-    @Id
-    private String id;
     private Calendar vaccineDate;
 
     public Vaccine(Calendar vaccineDate) {

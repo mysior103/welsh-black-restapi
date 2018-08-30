@@ -8,8 +8,6 @@ import java.util.Calendar;
 @Data
 @Document
 public class Estrus {
-    @Id
-    private String Id;
     private Calendar estrusDate;
 
     public Estrus(Calendar estrusDate) {
