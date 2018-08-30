@@ -9,6 +9,11 @@ import java.util.Calendar;
 @Data
 @Document
 public class BloodTest {
+    @Id
+    private String id;
+    private Calendar testDate;
+    private String cowNumber;
+    private boolean result;
 
     public BloodTest(Calendar testDate, String cowNumber, boolean result) {
         this.testDate = testDate;
@@ -16,11 +21,6 @@ public class BloodTest {
         this.result = result;
     }
 
-    @Id
-    private String id;
-
-    private Calendar testDate;
-    private String cowNumber;
-    private boolean result;
-
+    public BloodTest() {
+    }
 }

@@ -1,5 +1,6 @@
 package pl.mysior.welshblackrestapi.services;
 
+import com.mongodb.MongoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.Cow;
@@ -29,12 +30,13 @@ public class CowServiceImpl implements CowService {
 
     @Override
     public Cow findByNumber(String number) {
-        Optional<Cow> cowOptional = cowRepository.findById(number);
-        if(cowOptional.isPresent()){
-            return cowOptional.get();
-        }else{
-            return null;
-        }
+        return cowRepository.findById(number).orElseThrow(() -> new MongoException(number));
+//        Optional<Cow> cowOptional = cowRepository.findById(number);
+//        if(cowOptional.isPresent()){
+//            return cowOptional.get();
+//        }else{
+//            return null;
+//        }
     }
 
     @Override

@@ -5,16 +5,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 
 @Data
 @Document
 public class Cow {
-    private String name;
     @Id
     private String number;
-    private Calendar birth_date;
+    private String name;
+    private LocalDate birth_date;
     private String mother_number;
     private String father_number;
     private String sex;
@@ -26,7 +27,7 @@ public class Cow {
     private List<Estrus> estruses;
     private List<Vaccine> vaccines;
 
-    public Cow(String number, String name, Calendar birth_date, String mother_number, String father_number, String sex, String color, boolean active) {
+    public Cow(String number, String name, LocalDate birth_date, String mother_number, String father_number, String sex, String color, boolean active) {
 
         this.name = name;
         this.number = number;

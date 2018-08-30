@@ -2,12 +2,12 @@ package pl.mysior.welshblackrestapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.services.CommentService;
 import pl.mysior.welshblackrestapi.services.CowService;
-
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -15,35 +15,28 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/cows")
-public class CowController {
+@RequestMapping(path = "/comments")
+public class CommentController {
 
-    final CowService cowService;
 
     @Autowired
-    public CowController(CowService cowService) {
-        this.cowService = cowService;
-    }
+    CowService cowService;
+    @Autowired
+    CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Cow> addCow(@Valid @RequestBody Cow cow) throws URISyntaxException {
+    public ResponseEntity<Cow> addComment(@Valid @RequestBody Comment comment) throws URISyntaxException {
 
-        Cow saved = cowService.save(cow);
+        Cow saved = commentService.save(comment);
         HttpHeaders header = new HttpHeaders();
         header.add("Method","Created");
-        return ResponseEntity.created(new URI("/cows" + saved.getNumber()))
+        return ResponseEntity.created(new URI("/comments" + saved.getNumber()))
                 .headers(header)
                 .body(saved);
     }
 
     @GetMapping
-    public List<Cow> getAllCows() {
-        return cowService.findAll();
+    public List<Comment> getAllComments(){
+        return commentService.findAll();
     }
-
-    @PutMapping
-    public void updateCow(Cow cow) {
-        cowService.save(cow);
-    }
-
 }

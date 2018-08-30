@@ -20,4 +20,7 @@ public class Comment {
         this.comment = comment;
         this.commentDate = commentDate;
     }
+
+    public Comment() {
+    }
 }
