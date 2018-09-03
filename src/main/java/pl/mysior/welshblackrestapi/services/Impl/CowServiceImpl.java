@@ -1,10 +1,11 @@
-package pl.mysior.welshblackrestapi.services;
+package pl.mysior.welshblackrestapi.services.Impl;
 
 import com.mongodb.MongoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
+import pl.mysior.welshblackrestapi.services.CowService;
 
 import java.util.List;
 import java.util.Optional;

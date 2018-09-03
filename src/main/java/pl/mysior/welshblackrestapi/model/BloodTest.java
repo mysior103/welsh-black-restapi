@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 @Data
 @Document
-public class BloodTest {
+public class BloodTest implements Comparable<BloodTest>{
     private LocalDate testDate;
     private String cowNumber;
     private boolean result;
@@ -21,5 +21,11 @@ public class BloodTest {
     }
 
     public BloodTest() {
+    }
+
+
+    @Override
+    public int compareTo(BloodTest o) {
+        return getTestDate().compareTo(o.getTestDate());
     }
 }

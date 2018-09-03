@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/cows")
+@RequestMapping
 public class CowController {
 
     final CowService cowService;

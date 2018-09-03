@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/cows")
+@RequestMapping
 public class CommentController {
 
 
@@ -31,9 +31,13 @@ public class CommentController {
         Cow saved = commentService.save(comment);
         HttpHeaders header = new HttpHeaders();
         header.add("Method", "Created");
-        return ResponseEntity.created(new URI("/comments" + saved.getNumber()))
-                .headers(header)
-                .body(saved);
+        if(saved!=null) {
+            return ResponseEntity.created(new URI("/comments" + saved.getNumber()))
+                    .headers(header)
+                    .body(saved);
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(path = "/comments")
@@ -50,4 +54,11 @@ public class CommentController {
         }
         return comments;
     }
+
+    @GetMapping(path = "/comments/last")
+    public List<Comment> getLastComments(){
+        return commentService.findLast();
+    }
+
+
 }

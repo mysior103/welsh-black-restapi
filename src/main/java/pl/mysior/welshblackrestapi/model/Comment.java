@@ -9,7 +9,7 @@ import java.util.Calendar;
 
 @Data
 @Document
-public class Comment {
+public class Comment implements Comparable<Comment>{
 
     private String cowNumber;
     private String comment;
@@ -22,5 +22,18 @@ public class Comment {
     }
 
     public Comment() {
+    }
+
+    public LocalDate getCommentDate() {
+        return commentDate;
+    }
+
+    public void setCommentDate(LocalDate commentDate) {
+        this.commentDate = commentDate;
+    }
+
+    @Override
+    public int compareTo(Comment o) {
+        return getCommentDate().compareTo(o.getCommentDate());
     }
 }
