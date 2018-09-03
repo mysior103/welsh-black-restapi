@@ -39,7 +39,7 @@ public class CowController {
                 .body(saved);
     }
 
-    @GetMapping
+    @GetMapping(path = "/cows/")
     public List<Cow> getAllCows() {
         return cowService.findAll();
     }
