@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,10 +41,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(Cow.class)
+@WebMvcTest(CowController.class)
+
 public class CowControllerTest {
 
-    private Cow cow;
+    private Cow cow1;
+    private Cow cow2;
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,36 +61,62 @@ public class CowControllerTest {
 
     @Before
     public void before(){
-        cow = new Cow("PL123","imie","1324","13245","M","Brazowy",true);
+        cow1 = new Cow("PL123","imie",LocalDate.of(2015,8,5),"1324","13245","M","Brazowy",true);
+        cow2 = new Cow("PL1234","imie2",LocalDate.of(2014,5,4),"1324","13245","M","Brazowy",true);
     }
 
+    @Test
+    public void contextLoads() {
+        assertNotNull(cowService);
+    }
     @Test
     public void createCow_ShouldReturnRepresentationOfCreatedEntity() throws Exception {
 
-        Mockito.when(cowService.save(cow)).thenReturn(cow);
-//        RequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .post("/cows/")
-//                .accept(MediaType.APPLICATION_JSON_UTF8)
-//                .content(mapToJson(cow))
-//                .accept(MediaType.APPLICATION_JSON_UTF8);
-//        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//        MockHttpServletResponse respone = result.getResponse();
-//        Assert.assertEquals(HttpStatus.CREATED.value(),respone.getStatus());
+        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
         mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapToJson(cow)))
-                .andExpect(status().isCreated());
-//                .andExpect(jsonPath("$.number").value(cow.getNumber()));
+                .content(mapToJson(cow1)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.number").value(cow1.getNumber()))
+                .andExpect(jsonPath("$.name").value(cow1.getName()));
     }
     @Test
-    public void getAllCows_ShouldReturnListOfAllCows() throws Exception{
-        Mockito.when(cowService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(cow)));
-        System.out.println("****************" + cowService.findAll());
-        MvcResult results = mockMvc.perform(get("/cows/")).andReturn();
-        System.out.println("****************" + results.getResponse().getContentAsString());
+    public void getAllCows_ShouldReturnOK() throws Exception{
+        Mockito.when(cowService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(cow1,cow2)));
+        MvcResult results = mockMvc.perform(get("/")).andReturn();
         MockHttpServletResponse response = results.getResponse();
-        Assert.assertEquals(HttpStatus.OK.value(),response.getStatus());
+        assertEquals(HttpStatus.OK.value(),response.getStatus());
+    }
+    @Test
+    public void getAllCows_ShouldReturnListOfCows() throws Exception {
+        Mockito.when(cowService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(cow1,cow2)));
+        mockMvc.perform(get("/"))
+                .andExpect(jsonPath("$[0].number").value(cow1.getNumber()))
+                .andExpect(jsonPath("$[1].number").value(cow2.getNumber()));
     }
 
+    @Test
+    public void getCow_ShouldReturnRequestedCowByNumber() throws Exception{
+        Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(cow1);
+        mockMvc.perform(get("/"+ cow1.getNumber()).param("number",cow1.getNumber()))
+                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+    }
+    @Test
+    public void updateCow_ShouldReturnUpdatedCowIfPresent() throws Exception{
+        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
+        mockMvc.perform(post("/")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(cow1)))
+                .andExpect(jsonPath("$.name").value(cow1.getName()))
+                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+
+        cow1.setName("ChangedName");
+        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
+        mockMvc.perform(put("/")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(cow1)))
+                .andExpect(jsonPath("$.name").value(cow1.getName()))
+                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+    }
 
 }

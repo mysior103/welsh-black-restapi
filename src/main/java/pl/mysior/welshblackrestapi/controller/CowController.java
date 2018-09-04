@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequestMapping
 public class CowController {
 
-    final CowService cowService;
+    private final CowService cowService;
 
     @Autowired
     public CowController(CowService cowService) {
@@ -39,7 +39,7 @@ public class CowController {
                 .body(saved);
     }
 
-    @GetMapping(path = "/cows/")
+    @GetMapping()
     public List<Cow> getAllCows() {
         return cowService.findAll();
     }

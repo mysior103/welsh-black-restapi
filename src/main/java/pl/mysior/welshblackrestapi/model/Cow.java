@@ -50,16 +50,6 @@ public class Cow {
     public Cow() {
     }
 
-    public Cow(String number, String name, String mother_number, String father_number, String sex, String color, boolean active) {
-        this.number = number;
-        this.name = name;
-        this.mother_number = mother_number;
-        this.father_number = father_number;
-        this.sex = sex;
-        this.color = color;
-        this.active = active;
-    }
-
     public String getName() {
         return name;
     }
