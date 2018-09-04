@@ -31,7 +31,7 @@ public class CowServiceImpl implements CowService {
     @Override
     public Cow findByNumber(String number) {
         Optional<Cow> cowOptional = cowRepository.findById(number);
-        if (cowOptional.isPresent()) {
+        if (cowOptional.isPresent() && cowOptional!=null) {
             return cowOptional.get();
         } else {
             return null;

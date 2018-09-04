@@ -32,7 +32,7 @@ public class CommentController {
         HttpHeaders header = new HttpHeaders();
         header.add("Method", "Created");
         if(saved!=null) {
-            return ResponseEntity.created(new URI("/comments" + saved.getNumber()))
+            return ResponseEntity.created(new URI(saved.getNumber() + "/comments"))
                     .headers(header)
                     .body(saved);
         }else{
