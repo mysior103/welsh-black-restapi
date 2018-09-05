@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.mysior.welshblackrestapi.model.*;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
-import javax.validation.constraints.Null;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -25,12 +23,6 @@ import static org.junit.Assert.*;
 public class CowServiceTest {
 
     private Cow c;
-    private BloodTest bloodTest;
-    private Comment comment;
-    private Deworming deworming;
-    private Estrus estrus;
-    private Vaccine vaccine;
-
 
     @MockBean
     private CowRepository cowRepository;
@@ -61,28 +53,29 @@ public class CowServiceTest {
 
     @Test
     public void findByNumber_whenExistShouldReturnObject() {
-        doReturn(c).when(cowRepository).findById(c.getNumber());
+        doReturn(Optional.of(c)).when(cowRepository).findById(c.getNumber());
         Cow result = cowService.findByNumber(c.getNumber());
         assertEquals(c.getNumber(), result.getNumber());
     }
 
     @Test
-    public void findByNumber_whenNotExistShouldReturnNull() throws NullPointerException {
-        doReturn(null).when(cowRepository).findById(any(String.class));
-        Cow result = cowService.findByNumber(c.getNumber());
+    public void findByNumber_whenNotExistShouldReturnNull(){
+        doReturn(Optional.empty()).when(cowRepository).findById(any(String.class));
+        Cow result =cowService.findByNumber(this.c.getNumber());
         assertNull(result);
     }
 
     @Test
     public void deleteByNumber_whenNotExistShouldReturnNull() {
-        doReturn(null).when(cowRepository).deleteById(any(String.class));
+        doReturn(Optional.empty()).when(cowRepository).findById(any(String.class));
         Cow result = cowService.deleteByNumber(c.getNumber());
         assertNull(result);
     }
 
     @Test
     public void deleteByNumber_whenExistShouldReturnObject() {
-        doReturn(c).when(cowRepository).deleteById(c.getNumber());
+        Optional<Cow> cowOptional = Optional.of(c);
+        doReturn(cowOptional).when(cowRepository).findById(c.getNumber());
         Cow result = cowService.deleteByNumber(c.getNumber());
         assertEquals(c.getNumber(), result.getNumber());
     }

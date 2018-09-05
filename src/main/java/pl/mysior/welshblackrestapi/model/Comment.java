@@ -44,4 +44,13 @@ public class Comment implements Comparable<Comment>{
     public int compareTo(Comment o) {
         return getCommentDate().compareTo(o.getCommentDate());
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "cowNumber='" + cowNumber + '\'' +
+                ", comment='" + comment + '\'' +
+                ", commentDate=" + commentDate +
+                '}';
+    }
 }

@@ -13,8 +13,13 @@ import java.util.Optional;
 @Service
 public class CowServiceImpl implements CowService {
 
-    @Autowired
+    private final
     CowRepository cowRepository;
+
+    @Autowired
+    public CowServiceImpl(CowRepository cowRepository) {
+        this.cowRepository = cowRepository;
+    }
 
 
     @Override
@@ -31,11 +36,7 @@ public class CowServiceImpl implements CowService {
     @Override
     public Cow findByNumber(String number) {
         Optional<Cow> cowOptional = cowRepository.findById(number);
-        if (cowOptional.isPresent() && cowOptional!=null) {
-            return cowOptional.get();
-        } else {
-            return null;
-        }
+        return cowOptional.orElse(null);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class CowServiceImpl implements CowService {
             cowRepository.deleteById(number);
             return cowOptional.get();
         } else {
-            throw new MongoException("Couldn't find " + number);
+            return null;
         }
     }
 }

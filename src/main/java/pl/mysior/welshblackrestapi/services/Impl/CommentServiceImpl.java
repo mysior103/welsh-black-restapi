@@ -16,11 +16,13 @@ import java.util.Optional;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    @Autowired
+    private final
     CowRepository cowRepository;
-    @Autowired
-    CommentRepository commentRepository;
 
+    @Autowired
+    public CommentServiceImpl(CowRepository cowRepository) {
+        this.cowRepository = cowRepository;
+    }
 
     public Cow save(Comment comment) {
         Cow foundCow;
@@ -69,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private boolean containsName(final List<Comment> list, final String number) {
-        return list.stream().filter(o -> o.getCowNumber().equals(number)).findFirst().isPresent();
+        return list.stream().anyMatch(o -> o.getCowNumber().equals(number));
     }
 
 }
