@@ -69,6 +69,7 @@ public class CommentControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.comments[0].comment").value(cow1.getComments().get(0).getComment()));
     }
+
     @Test
     public void getAllComments_ShouldReturnListOfAllComments() throws Exception{
         Mockito.when(commentService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(comment1,comment2)));
