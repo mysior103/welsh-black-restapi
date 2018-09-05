@@ -1,6 +1,7 @@
 package pl.mysior.welshblackrestapi.services.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
@@ -12,13 +13,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class BloodTestServiceImpl implements BloodTestService {
 
     @Autowired
     CowRepository cowRepository;
-    @Autowired
-    BloodTestRepository bloodTestRepository;
 
     @Override
     public Cow save(BloodTest bloodTest) {

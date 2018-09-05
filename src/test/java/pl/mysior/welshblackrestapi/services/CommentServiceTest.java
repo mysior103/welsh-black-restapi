@@ -1,15 +1,11 @@
 package pl.mysior.welshblackrestapi.services;
 
-import org.apache.tomcat.jni.Local;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.convert.JodaTimeConverters;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
@@ -20,7 +16,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,18 +27,11 @@ public class CommentServiceTest {
     private Cow cow1;
     private Cow cow2;
 
-
-    @MockBean
-    private CommentRepository commentRepository;
-
     @MockBean
     private CowRepository cowRepository;
 
     @Autowired
     private CommentService commentService;
-
-    @Autowired
-    private CowService cowService;
 
     @Before
     public void before() {
@@ -55,8 +43,7 @@ public class CommentServiceTest {
 
     @Test
     public void save_shouldReturnCowWithSavedComment() {
-        Optional<Cow> optionalCow = Optional.of(cow1);
-        doReturn(optionalCow).when(cowRepository).findById(comment1.getCowNumber());
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(comment1.getCowNumber());
         Cow result = commentService.save(comment1);
         assertEquals(result.getComments().get(0).getComment(), comment1.getComment());
     }
@@ -85,7 +72,6 @@ public class CommentServiceTest {
 
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Comment> result = commentService.findAll();
-        System.out.println(result.get(0).getComment());
         assertTrue(result.get(0).getCommentDate().isBefore(result.get(1).getCommentDate()));
     }
 

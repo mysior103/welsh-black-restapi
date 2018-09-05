@@ -10,14 +10,14 @@ import java.util.Calendar;
 @Data
 @Document
 public class BloodTest implements Comparable<BloodTest>{
-    private LocalDate testDate;
     private String cowNumber;
     private boolean result;
+    private LocalDate testDate;
 
-    public BloodTest(LocalDate testDate, String cowNumber, boolean result) {
-        this.testDate = testDate;
+    public BloodTest(String cowNumber, boolean result, LocalDate testDate) {
         this.cowNumber = cowNumber;
         this.result = result;
+        this.testDate = testDate;
     }
 
     public BloodTest() {
