@@ -19,8 +19,11 @@ import pl.mysior.welshblackrestapi.services.BloodTestService;
 import pl.mysior.welshblackrestapi.services.CowService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,11 +78,22 @@ public class BloodTestControllerTest {
 
     @Test
     public void save_ReturnNotFoundIfCowDoesNotExist() throws Exception {
-        Mockito.when(bloodTestService.save(any(BloodTest.class))).thenReturn(null);
+        when(bloodTestService.save(bloodTest1)).thenReturn(null);
         mockMvc.perform(post("/bloodtests")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(bloodTest1)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void save_ReturnIsCreated() throws Exception{
+        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest1)));
+        //cow1.getBloodTests().add(bloodTest1);
+        when(bloodTestService.save(bloodTest1)).thenReturn(cow1);
+        mockMvc.perform(post("/bloodtests")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(bloodTest1)))
+                .andExpect(status().isCreated());
     }
 
 
