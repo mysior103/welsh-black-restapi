@@ -60,15 +60,16 @@ public class CowControllerTest {
     }
 
     @Before
-    public void before(){
-        cow1 = new Cow("PL123","imie",LocalDate.of(2015,8,5),"1324","13245","M","Brazowy",true);
-        cow2 = new Cow("PL1234","imie2",LocalDate.of(2014,5,4),"1324","13245","M","Brazowy",true);
+    public void before() {
+        cow1 = new Cow("PL123", "imie", LocalDate.of(2015, 8, 5), "1324", "13245", "M", "Brazowy", true);
+        cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
     }
 
     @Test
     public void contextLoads() {
         assertNotNull(cowService);
     }
+
     @Test
     public void createCow_ShouldReturnRepresentationOfCreatedEntity() throws Exception {
 
@@ -80,29 +81,32 @@ public class CowControllerTest {
                 .andExpect(jsonPath("$.number").value(cow1.getNumber()))
                 .andExpect(jsonPath("$.name").value(cow1.getName()));
     }
+
     @Test
-    public void getAllCows_ShouldReturnOK() throws Exception{
-        Mockito.when(cowService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(cow1,cow2)));
+    public void getAllCows_ShouldReturnOK() throws Exception {
+        Mockito.when(cowService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(cow1, cow2)));
         MvcResult results = mockMvc.perform(get("/")).andReturn();
         MockHttpServletResponse response = results.getResponse();
-        assertEquals(HttpStatus.OK.value(),response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
+
     @Test
     public void getAllCows_ShouldReturnListOfCows() throws Exception {
-        Mockito.when(cowService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(cow1,cow2)));
+        Mockito.when(cowService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(cow1, cow2)));
         mockMvc.perform(get("/"))
                 .andExpect(jsonPath("$[0].number").value(cow1.getNumber()))
                 .andExpect(jsonPath("$[1].number").value(cow2.getNumber()));
     }
 
     @Test
-    public void getCow_ShouldReturnRequestedCowByNumber() throws Exception{
+    public void getCow_ShouldReturnRequestedCowByNumber() throws Exception {
         Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(cow1);
-        mockMvc.perform(get("/"+ cow1.getNumber()).param("number",cow1.getNumber()))
+        mockMvc.perform(get("/" + cow1.getNumber()).param("number", cow1.getNumber()))
                 .andExpect(jsonPath("$.number").value(cow1.getNumber()));
     }
+
     @Test
-    public void updateCow_ShouldReturnUpdatedCowIfPresent() throws Exception{
+    public void updateCow_ShouldReturnUpdatedCowIfPresent() throws Exception {
         Mockito.when(cowService.save(cow1)).thenReturn(cow1);
         mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
