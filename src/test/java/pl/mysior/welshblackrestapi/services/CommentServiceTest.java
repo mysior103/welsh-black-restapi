@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.repository.CommentRepository;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
 import java.time.LocalDate;

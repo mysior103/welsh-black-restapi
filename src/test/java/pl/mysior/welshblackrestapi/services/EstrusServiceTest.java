@@ -1,4 +1,4 @@
 package pl.mysior.welshblackrestapi.services;
 
-public class MongoTest {
+public class EstrusServiceTest {
 }

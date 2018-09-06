@@ -12,9 +12,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.util.Calendar;
+
 @Data
 @Document
-public class Deworming {
+public class Deworming implements Comparable<Deworming> {
 
     private String cowNumber;
     private int quantity;
@@ -31,5 +32,10 @@ public class Deworming {
     }
 
     public Deworming() {
+    }
+
+    @Override
+    public int compareTo(Deworming o) {
+        return getDewormingDate().compareTo(o.getDewormingDate());
     }
 }

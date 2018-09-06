@@ -88,4 +88,15 @@ public class BloodTestServiceTest {
         assertEquals(result.get(0).getTestDate(), bloodTest3.getTestDate());
         assertEquals(result.get(1).getTestDate(), bloodTest2.getTestDate());
     }
+
+    @Test
+    public void findByCow_shouldReturnOrderedListOfAllBloodTestsOfSpecificCow(){
+        cow1.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest1)));
+        BloodTest bloodTest3 = new BloodTest("PL123",false,LocalDate.of(2019,8,8));
+        cow1.getBloodTests().add(bloodTest3);
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
+        List<BloodTest> result = bloodTestService.findByCow(cow1.getNumber());
+        assertEquals(result.get(0).getTestDate(), bloodTest1.getTestDate());
+        assertEquals(result.get(1).getTestDate(), bloodTest3.getTestDate());
+    }
 }

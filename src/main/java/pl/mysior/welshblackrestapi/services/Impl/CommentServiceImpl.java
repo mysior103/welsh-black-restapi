@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.repository.CommentRepository;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 import pl.mysior.welshblackrestapi.services.CommentService;
 

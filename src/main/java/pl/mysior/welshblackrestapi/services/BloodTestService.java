@@ -12,4 +12,6 @@ public interface BloodTestService {
     List<BloodTest> findAll();
 
     List<BloodTest> findLast();
+
+    List<BloodTest> findByCow(String cowNumber);
 }

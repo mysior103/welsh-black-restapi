@@ -3,9 +3,7 @@ package pl.mysior.welshblackrestapi.services.Impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.BloodTest;
-import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.repository.BloodTestRepository;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 import pl.mysior.welshblackrestapi.services.BloodTestService;
 
@@ -13,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class BloodTestServiceImpl implements BloodTestService {
 
@@ -43,8 +42,8 @@ public class BloodTestServiceImpl implements BloodTestService {
     public List<BloodTest> findAll() {
         List<Cow> allCows = cowRepository.findAll();
         List<BloodTest> allBloodTests = new ArrayList<>();
-        for(Cow c: allCows){
-            if(c.getBloodTests()!=null){
+        for (Cow c : allCows) {
+            if (c.getBloodTests() != null) {
                 allBloodTests.addAll(c.getBloodTests());
             }
         }
@@ -59,13 +58,26 @@ public class BloodTestServiceImpl implements BloodTestService {
 
         List<BloodTest> lastBloodTest = new ArrayList<>();
 
-        for(BloodTest bt : allBloodTests){
-            if(!containsName(lastBloodTest,bt.getCowNumber())){
+        for (BloodTest bt : allBloodTests) {
+            if (!containsName(lastBloodTest, bt.getCowNumber())) {
                 lastBloodTest.add(bt);
             }
         }
         return lastBloodTest;
     }
+
+    @Override
+    public List<BloodTest> findByCow(String cowNumber) {
+        Optional<Cow> optionalCow = cowRepository.findById(cowNumber);
+        Cow c = optionalCow.orElse(null);
+        List<BloodTest> bloodTests = new ArrayList<>();
+        if (c.getBloodTests() != null) {
+            bloodTests = c.getBloodTests();
+            bloodTests.sort(BloodTest::compareTo);
+        }
+        return bloodTests;
+    }
+
     private boolean containsName(final List<BloodTest> list, final String number) {
         return list.stream().filter(o -> o.getCowNumber().equals(number)).findFirst().isPresent();
     }
