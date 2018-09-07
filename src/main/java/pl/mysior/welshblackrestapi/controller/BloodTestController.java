@@ -7,7 +7,6 @@ import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.services.BloodTestService;
-import pl.mysior.welshblackrestapi.services.CowService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -15,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
+@RequestMapping(path = "/cows")
 public class BloodTestController {
 
     private static final String OPERATION = "Bloodtest";
