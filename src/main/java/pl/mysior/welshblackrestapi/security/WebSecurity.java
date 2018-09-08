@@ -3,6 +3,7 @@ package pl.mysior.welshblackrestapi.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +18,7 @@ import pl.mysior.welshblackrestapi.security.user.UserDetailsServiceImpl;
 
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SIGN_UP_URL;
 
-
+@Configuration
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
