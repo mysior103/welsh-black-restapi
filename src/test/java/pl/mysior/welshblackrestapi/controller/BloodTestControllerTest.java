@@ -2,6 +2,7 @@ package pl.mysior.welshblackrestapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,15 +10,23 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.security.JWTAuthenticationFilter;
+import pl.mysior.welshblackrestapi.security.user.ApplicationUserRepository;
+import pl.mysior.welshblackrestapi.security.user.UserController;
 import pl.mysior.welshblackrestapi.services.BloodTestService;
 import pl.mysior.welshblackrestapi.services.CowService;
 
@@ -26,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,8 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(BloodTestController.class)
-@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class})
+@WebAppConfiguration
+@WebMvcTest({BloodTestController.class, UserController.class, JWTAuthenticationFilter.class})
 public class BloodTestControllerTest {
 
     private Cow cow1;
@@ -46,8 +56,15 @@ public class BloodTestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    WebApplicationContext webApplicationContext;
+
     @MockBean
     private BloodTestService bloodTestService;
+
+    @MockBean
+    ApplicationUserRepository applicationUserRepository;
+
 
     private String mapToJson(Object object) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -56,16 +73,44 @@ public class BloodTestControllerTest {
 
     @Before
     public void before() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         cow1 = new Cow("PL123", "imie", LocalDate.of(2015, 8, 5), "1324", "13245", "M", "Brazowy", true);
         cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
         bloodTest1 = new BloodTest("PL123", true, LocalDate.of(2018, 1, 1));
         bloodTest2 = new BloodTest("PL1234", false, LocalDate.of(2018, 2, 2));
     }
 
+    private String obtainToken() throws Exception {
+        String username = "user";
+        String password = "password";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("password", password);
+        jsonObject.put("username",username);
+        String content = jsonObject.toString();
+        //sign-up
+        mockMvc.perform(post("/users/sign-up")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+                .andExpect(status().isOk());
+        //login
+        ResultActions resultActions = mockMvc.perform(post("/login") // tu nie działa bo nie widzi tego restpointa.
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+                .andExpect(status().isOk());
+
+        String resultHeader = resultActions.andReturn().getResponse().getContentAsString();
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        String token = jsonParser.parseMap(resultHeader).get("Authorization").toString();
+        return token;
+    }
+
     @Test
     public void save_ReturnBadRequestIfLackOfData() throws Exception {
         BloodTest bloodTest = null;
+        String test = obtainToken();
+        System.out.println(test);
         mockMvc.perform(post("/bloodtests")
+                .header("Authorization",test)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(bloodTest)))
                 .andExpect(status().isBadRequest());

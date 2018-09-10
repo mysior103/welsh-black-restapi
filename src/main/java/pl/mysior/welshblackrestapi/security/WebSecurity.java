@@ -26,9 +26,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Value("${security.enabled:true}")
-    private boolean securityEnabled;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
@@ -43,12 +40,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-    }
-
-    @Override
-    public void configure(org.springframework.security.config.annotation.web.builders.WebSecurity web) throws Exception {
-        if (!securityEnabled)
-            web.ignoring().antMatchers("/**");
     }
 
     @Bean
