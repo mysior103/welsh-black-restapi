@@ -1,2 +1,17 @@
 codecov:
   token: e7f8b9ec-059b-47f2-a34b-4fcea9726653
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+
+  status:
+    project: yes
+    patch: yes
+    changes: no
+
+  ignore:
+  - "src/main/java/pl/mysior/welshblackrestapi/config/*"
+  - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthenticationFilter"
+  - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthorizationFilter"
