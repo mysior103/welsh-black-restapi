@@ -1,4 +1,4 @@
-package pl.mysior.welshblackrestapi.security.user;
+package pl.mysior.welshblackrestapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
@@ -15,6 +15,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import pl.mysior.welshblackrestapi.security.user.ApplicationUser;
+import pl.mysior.welshblackrestapi.security.user.ApplicationUserRepository;
+import pl.mysior.welshblackrestapi.security.user.UserController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
@@ -21,7 +22,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class DewormingServiceTest {
 
@@ -54,7 +55,7 @@ public class DewormingServiceTest {
     }
 
     @Test
-    public void save_ShouldCreateNewListIfNoDEwormingsDoesNotExistAndReturnCowWithDeworming() {
+    public void save_ShouldCreateNewListIfNoDewormingsDoesNotExistAndReturnCowWithDeworming() {
         doReturn(Optional.of(cow1)).when((cowRepository)).findById(any(String.class));
         Cow result = dewormingService.save(deworming1);
         assertEquals(result.getDewormings().size(), 1);

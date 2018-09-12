@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import pl.mysior.welshblackrestapi.security.user.UserDetailsServiceImpl;
+import pl.mysior.welshblackrestapi.security.user.UserServiceImpl;
 
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SIGN_UP_URL;
 
@@ -21,10 +21,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private static final String[] SWAGGER_RESOURCES = {"/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/webjars/**", "/swagger-resources/configuration/ui", "/swagger-ui.html"};
 
-    private UserDetailsServiceImpl userDetailsService;
+    private UserServiceImpl userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public WebSecurity(UserDetailsServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WebSecurity(UserServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
