@@ -12,6 +12,7 @@ coverage:
     changes: no
 
   ignore:
-  - "src/main/java/pl/mysior/welshblackrestapi/config/*"
-  - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthenticationFilter"
-  - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthorizationFilter"
+    - "src/main/java/pl/mysior/welshblackrestapi/config/*"
+    - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthenticationFilter.java"
+    - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthorizationFilter.java"
+    - "src/main/java/pl/mysior/welshblackrestapi/security/SecurityConstants.java"
