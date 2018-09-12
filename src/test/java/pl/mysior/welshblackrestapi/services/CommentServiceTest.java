@@ -41,10 +41,19 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void save_shouldReturnCowWithSavedComment() {
+    public void save_shouldCreateNewListReturnCowWithSavedComment() {
         doReturn(Optional.of(cow1)).when(cowRepository).findById(comment1.getCowNumber());
         Cow result = commentService.save(comment1);
         assertEquals(result.getComments().get(0).getComment(), comment1.getComment());
+    }
+
+    @Test
+    public void save_shouldAddCommentToListReturnCowWithSavedComment() {
+        Comment comment3 = new Comment("PL123", "This is a comment3!", LocalDate.of(2019, 3, 4));
+        cow1.setComments(new ArrayList<>(Arrays.asList(comment3)));
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(comment1.getCowNumber());
+        Cow result = commentService.save(comment1);
+        assertEquals(result.getComments().size(),2);
     }
 
     @Test

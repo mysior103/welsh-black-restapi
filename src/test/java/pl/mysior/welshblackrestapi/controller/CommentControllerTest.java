@@ -20,7 +20,6 @@ import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.services.CommentService;
 import pl.mysior.welshblackrestapi.services.CowService;
 
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;

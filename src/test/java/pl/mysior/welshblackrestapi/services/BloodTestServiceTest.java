@@ -43,10 +43,19 @@ public class BloodTestServiceTest {
     }
 
     @Test
-    public void save_shouldReturnCowWithSavedBloodTest() {
+    public void save_shouldCreateNewListAndReturnCowWithSavedBloodTest() {
         doReturn(Optional.of(cow1)).when(cowRepository).findById(bloodTest1.getCowNumber());
         Cow result = bloodTestService.save(bloodTest1);
         assertEquals(result.getBloodTests().get(0).getTestDate(), bloodTest1.getTestDate());
+    }
+
+    @Test
+    public void save_shouldAddBloodTestToListAndReturnCowWithSavedBloodTest() {
+        BloodTest bloodTest3 = new BloodTest("PL123",false,LocalDate.of(2019,8,8));
+        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest3)));
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(bloodTest1.getCowNumber());
+        Cow result = bloodTestService.save(bloodTest1);
+        assertEquals(result.getBloodTests().size(), 2);
     }
 
     @Test
