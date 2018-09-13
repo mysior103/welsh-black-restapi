@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.services.CowService;
 
@@ -67,9 +68,8 @@ public class CowControllerTest {
 
     @Before
     public void before() {
-        cow1 = new Cow("PL123", "imie", LocalDate.of(2015, 8, 5), "1324", "13245", "M", "Brazowy", true);
-        cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
-
+        cow1 = TestObjectFactory.Cow("PL123");
+        cow2 = TestObjectFactory.Cow("PL1234");
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .build();
@@ -155,6 +155,7 @@ public class CowControllerTest {
                 .andExpect(jsonPath("$.name").value(cow1.getName()))
                 .andExpect(jsonPath("$.number").value(cow1.getNumber()));
     }
+
     @Test
     public void updateCow_ShouldBadRequestIfLackOfCowNumber() throws Exception {
         cow1.setNumber("");

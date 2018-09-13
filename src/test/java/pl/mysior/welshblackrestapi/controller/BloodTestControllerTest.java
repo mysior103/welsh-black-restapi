@@ -16,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import pl.mysior.welshblackrestapi.JsonMapper;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.mysior.welshblackrestapi.JsonMapper.mapToJson;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.EXPIRATION_TIME;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 
@@ -46,13 +48,13 @@ import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 @WebMvcTest(BloodTestController.class)
 public class BloodTestControllerTest {
 
+    private static final String DEFAULT_URL = "/cows/bloodtests";
+
     private Cow cow1;
     private Cow cow2;
     private BloodTest bloodTest1;
     private BloodTest bloodTest2;
     private BloodTest bloodTest3;
-
-    private static final String DEFAULT_URL = "/cows/bloodtests";
 
     @Autowired
     private MockMvc mockMvc;
@@ -63,20 +65,16 @@ public class BloodTestControllerTest {
     @MockBean
     private BloodTestService bloodTestService;
 
-    @MockBean
-    ApplicationUserRepository applicationUserRepository;
-
-
-    private String mapToJson(Object object) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(object);
+    private String obtainToken() {
+        String token = JWT.create().withSubject("username").withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .sign(HMAC512(SECRET.getBytes()));
+        return "Bearer " + token;
     }
 
     @Before
     public void before() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         cow1 = TestObjectFactory.Cow("PL123");
-        cow2 = TestObjectFactory.Cow("PL1324");
+        cow2 = TestObjectFactory.Cow("PL1234");
         bloodTest1 = new BloodTest("PL123", true, LocalDate.of(2018, 1, 1));
         bloodTest2 = new BloodTest("PL1234", false, LocalDate.of(2018, 2, 2));
         bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 2, 2));
@@ -88,16 +86,11 @@ public class BloodTestControllerTest {
 
     }
 
-    private String obtainToken() {
-        String token = JWT.create().withSubject("username").withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .sign(HMAC512(SECRET.getBytes()));
-        return "Bearer "+token;
-    }
-
     @Test
     public void save_ShouldReturnBadRequestIfNumberIsNull() throws Exception {
+        bloodTest1.setCowNumber(null);
         mockMvc.perform(post(DEFAULT_URL)
-                .header("Authorization",obtainToken())
+                .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(bloodTest1)))
                 .andExpect(status().isBadRequest());
@@ -105,6 +98,7 @@ public class BloodTestControllerTest {
 
     @Test
     public void save_ShouldReturnBadRequestIfLackOfCowNumber() throws Exception {
+        bloodTest1.setCowNumber("");
         mockMvc.perform(post(DEFAULT_URL)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(bloodTest1)))
@@ -115,7 +109,7 @@ public class BloodTestControllerTest {
     public void save_ShouldReturnNotFoundIfCowDoesNotExist() throws Exception {
         when(bloodTestService.save(bloodTest1)).thenReturn(null);
         mockMvc.perform(post(DEFAULT_URL)
-                .header("Authorization",obtainToken())
+                .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(bloodTest1)))
                 .andExpect(status().isNotFound());
@@ -126,7 +120,7 @@ public class BloodTestControllerTest {
         cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest1)));
         when(bloodTestService.save(bloodTest1)).thenReturn(cow1);
         mockMvc.perform(post(DEFAULT_URL)
-                .header("Authorization",obtainToken())
+                .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(bloodTest1)))
                 .andExpect(status().isCreated());
@@ -136,32 +130,34 @@ public class BloodTestControllerTest {
     public void getAllBloodTests_ShouldReturnEmptyListIfLackOfBloodTests() throws Exception {
         when(bloodTestService.findAll()).thenReturn(new ArrayList<>());
         mockMvc.perform(get(DEFAULT_URL)
-                .header("Authorization",obtainToken()))
+                .header("Authorization", obtainToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
     }
 
     @Test
     public void getAllBloodTest_ShouldReturnAllBloodTestsFromAllCows() throws Exception {
-        when(bloodTestService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(bloodTest1,bloodTest2)));
+        when(bloodTestService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(bloodTest1, bloodTest2)));
         mockMvc.perform(get(DEFAULT_URL)
-                .header("Authorization",obtainToken()))
+                .header("Authorization", obtainToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].cowNumber").value(bloodTest1.getCowNumber()))
                 .andExpect(jsonPath("$[1].cowNumber").value(bloodTest2.getCowNumber()));
     }
+
     @Test
-    public void getBloodTests_ShouldReturnAllBloodTestFromSpecificCow() throws Exception{
-       when(bloodTestService.findByCow(any(String.class))).thenReturn(new ArrayList<>(Arrays.asList(bloodTest1,bloodTest3)));
+    public void getBloodTests_ShouldReturnAllBloodTestFromSpecificCow() throws Exception {
+        when(bloodTestService.findByCow(any(String.class))).thenReturn(new ArrayList<>(Arrays.asList(bloodTest1, bloodTest3)));
         mockMvc.perform(get("/cows/" + cow1.getNumber() + "/bloodtests")
-                .header("Authorization",obtainToken()))
+                .header("Authorization", obtainToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].cowNumber").value(bloodTest1.getCowNumber()))
                 .andExpect(jsonPath("$[1].cowNumber").value(bloodTest3.getCowNumber()));
     }
+
     @Test
     public void getLastBloodTests_ShouldReturnOrderedBloodTestsOfAllCows() throws Exception {
-        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest1,bloodTest3)));
+        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest1, bloodTest3)));
         cow2.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest2)));
         when(bloodTestService.findLast()).thenReturn(new ArrayList<>(Arrays.asList(bloodTest3, bloodTest2)));
         mockMvc.perform(get(DEFAULT_URL + "/last")

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
@@ -36,10 +37,10 @@ public class BloodTestServiceTest {
 
     @Before
     public void before() {
-        cow1 = new Cow("PL123", "imie", LocalDate.of(2018, 5, 1), "1324", "13245", "M", "Brazowy", true);
-        cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
-        bloodTest1 = new BloodTest("PL123",true,LocalDate.of(2016,11,14));
-        bloodTest2 = new BloodTest("PL1234",true,LocalDate.of(2017,10,24));
+        cow1 = TestObjectFactory.Cow("PL123");
+        cow2 = TestObjectFactory.Cow("PL1234");
+        bloodTest1 = new BloodTest("PL123", true, LocalDate.of(2016, 11, 14));
+        bloodTest2 = new BloodTest("PL1234", true, LocalDate.of(2017, 10, 24));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class BloodTestServiceTest {
 
     @Test
     public void save_shouldAddBloodTestToListAndReturnCowWithSavedBloodTest() {
-        BloodTest bloodTest3 = new BloodTest("PL123",false,LocalDate.of(2019,8,8));
+        BloodTest bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 8, 8));
         cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest3)));
         doReturn(Optional.of(cow1)).when(cowRepository).findById(bloodTest1.getCowNumber());
         Cow result = bloodTestService.save(bloodTest1);
@@ -89,7 +90,7 @@ public class BloodTestServiceTest {
     public void findLast_ShouldReturnLastBloodTestOfCow() {
         cow1.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest1)));
         cow2.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest2)));
-        BloodTest bloodTest3 = new BloodTest("PL123",false,LocalDate.of(2019,8,8));
+        BloodTest bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 8, 8));
         cow1.getBloodTests().add(bloodTest3);
 
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
@@ -99,9 +100,9 @@ public class BloodTestServiceTest {
     }
 
     @Test
-    public void findByCow_shouldReturnOrderedListOfAllBloodTestsOfSpecificCow(){
+    public void findByCow_shouldReturnOrderedListOfAllBloodTestsOfSpecificCow() {
         cow1.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest1)));
-        BloodTest bloodTest3 = new BloodTest("PL123",false,LocalDate.of(2019,8,8));
+        BloodTest bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 8, 8));
         cow1.getBloodTests().add(bloodTest3);
         doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
         List<BloodTest> result = bloodTestService.findByCow(cow1.getNumber());

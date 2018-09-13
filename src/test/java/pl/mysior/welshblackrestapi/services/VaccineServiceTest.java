@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Vaccine;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
@@ -37,11 +38,11 @@ public class VaccineServiceTest {
 
     @Before
     public void before() {
-        cow1 = new Cow("PL123", "imie", LocalDate.of(2018, 5, 1), "1324", "13245", "M", "Brazowy", true);
-        cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
+        cow1 = TestObjectFactory.Cow("PL123");
+        cow2 = TestObjectFactory.Cow("PL1234");
         vaccine1 = new Vaccine("PL123", LocalDate.of(2018, 4, 5));
         vaccine2 = new Vaccine("PL1234", LocalDate.of(2018, 9, 8));
-        vaccine3 = new Vaccine("Pl123",LocalDate.of(2018,8,10));
+        vaccine3 = new Vaccine("Pl123", LocalDate.of(2018, 8, 10));
     }
 
     @Test
@@ -75,6 +76,7 @@ public class VaccineServiceTest {
         List<Vaccine> result = vaccineService.findAll();
         assertEquals(result.size(), 2);
     }
+
     @Test
     public void findAll_ShouldReturnOrderedListOfAllVaccines() {
         cow1.setVaccines(new ArrayList<>(Collections.singletonList(vaccine1)));
@@ -96,7 +98,7 @@ public class VaccineServiceTest {
     }
 
     @Test
-    public void findByCow_shouldReturnOrderedListOfVaccinesOfSpecificCow(){
+    public void findByCow_shouldReturnOrderedListOfVaccinesOfSpecificCow() {
 
         cow1.setVaccines(new ArrayList<>(Collections.singletonList(vaccine1)));
         cow1.getVaccines().add(vaccine3);

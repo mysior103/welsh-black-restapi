@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
@@ -40,8 +41,8 @@ public class DewormingServiceTest {
 
     @Before
     public void before() {
-        cow1 = new Cow("PL123", "imie", LocalDate.of(2018, 5, 1), "1324", "13245", "M", "Brazowy", true);
-        cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
+        cow1 = TestObjectFactory.Cow("PL123");
+        cow2 = TestObjectFactory.Cow("PL1234");
         deworming1 = new Deworming("PL123", 100, LocalDate.of(2013, 6, 7));
         deworming2 = new Deworming("PL1234", 200, LocalDate.of(2014, 6, 7));
         deworming3 = new Deworming("PL123", 200, LocalDate.of(2015, 6, 7));

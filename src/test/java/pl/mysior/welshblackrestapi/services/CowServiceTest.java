@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.*;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
@@ -22,7 +23,8 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class CowServiceTest {
 
-    private Cow c;
+    private Cow cow1;
+    private Cow cow2;
 
     @MockBean
     private CowRepository cowRepository;
@@ -33,51 +35,51 @@ public class CowServiceTest {
     @Before
     public void before() {
 
-        c = new Cow("PL123", "imie", LocalDate.of(2018, 5, 1), "1324", "13245", "M", "Brazowy", true);
-    }
+        cow1 = TestObjectFactory.Cow("PL123");
+        cow2 = TestObjectFactory.Cow("PL1234");
+       }
 
     @Test
     public void save_shouldCreateAndReturnCreatedCowObject() {
-        when(cowRepository.save(Mockito.any(Cow.class))).thenReturn(c);
-        Cow result = cowService.save(c);
-        Assert.assertEquals(c.getNumber(), result.getNumber());
+        when(cowRepository.save(Mockito.any(Cow.class))).thenReturn(cow1);
+        Cow result = cowService.save(cow1);
+        Assert.assertEquals(cow1.getNumber(), result.getNumber());
     }
 
     @Test
     public void findAll_shouldReturnAllCows() {
-        Cow c1 = new Cow("PL123", "imie", LocalDate.of(2017, 10, 3), "1324", "13245", "M", "Brazowy", true);
-        when(cowRepository.findAll()).thenReturn(Arrays.asList(c, c1));
+        when(cowRepository.findAll()).thenReturn(Arrays.asList(cow1, cow2));
         List all = cowService.findAll();
         assertEquals(2, all.size());
     }
 
     @Test
     public void findByNumber_whenExistShouldReturnObject() {
-        doReturn(Optional.of(c)).when(cowRepository).findById(c.getNumber());
-        Cow result = cowService.findByNumber(c.getNumber());
-        assertEquals(c.getNumber(), result.getNumber());
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
+        Cow result = cowService.findByNumber(cow1.getNumber());
+        assertEquals(cow1.getNumber(), result.getNumber());
     }
 
     @Test
     public void findByNumber_whenNotExistShouldReturnNull(){
         doReturn(Optional.empty()).when(cowRepository).findById(any(String.class));
-        Cow result =cowService.findByNumber(this.c.getNumber());
+        Cow result =cowService.findByNumber(this.cow1.getNumber());
         assertNull(result);
     }
 
     @Test
     public void deleteByNumber_whenNotExistShouldReturnNull() {
         doReturn(Optional.empty()).when(cowRepository).findById(any(String.class));
-        Cow result = cowService.deleteByNumber(c.getNumber());
+        Cow result = cowService.deleteByNumber(cow1.getNumber());
         assertNull(result);
     }
 
     @Test
     public void deleteByNumber_whenExistShouldReturnObject() {
-        Optional<Cow> cowOptional = Optional.of(c);
-        doReturn(cowOptional).when(cowRepository).findById(c.getNumber());
-        Cow result = cowService.deleteByNumber(c.getNumber());
-        assertEquals(c.getNumber(), result.getNumber());
+        Optional<Cow> cowOptional = Optional.of(cow1);
+        doReturn(cowOptional).when(cowRepository).findById(cow1.getNumber());
+        Cow result = cowService.deleteByNumber(cow1.getNumber());
+        assertEquals(cow1.getNumber(), result.getNumber());
     }
 
 }

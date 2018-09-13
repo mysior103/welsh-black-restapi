@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Estrus;
@@ -38,13 +39,14 @@ public class EstrusServiceTest {
     private EstrusService estrusService;
 
     @Before
-    public void before(){
-        estrus1 = new Estrus("PL123", LocalDate.of(2015,4,5));
-        estrus2 = new Estrus("PL1234", LocalDate.of(2016,7,6));
-        estrus3 = new Estrus("PL123", LocalDate.of(2017,1,1));
-        cow1 = new Cow("PL123", "imie", LocalDate.of(2018, 5, 1), "1324", "13245", "M", "Brazowy", true);
-        cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
+    public void before() {
+        cow1 = TestObjectFactory.Cow("PL123");
+        cow2 = TestObjectFactory.Cow("PL1234");
+        estrus1 = new Estrus("PL123", LocalDate.of(2015, 4, 5));
+        estrus2 = new Estrus("PL1234", LocalDate.of(2016, 7, 6));
+        estrus3 = new Estrus("PL123", LocalDate.of(2017, 1, 1));
     }
+
     @Test
     public void save_ShouldReturnNullIfCowDoesNotExist() {
         doReturn(Optional.empty()).when((cowRepository)).findById(any(String.class));
@@ -100,7 +102,7 @@ public class EstrusServiceTest {
     }
 
     @Test
-    public void findByCow_shouldReturnOrderedListOfAllEstrusesOfSpecificCow(){
+    public void findByCow_shouldReturnOrderedListOfAllEstrusesOfSpecificCow() {
         cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
         cow1.getEstruses().add(estrus3);
         doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
