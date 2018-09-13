@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import pl.mysior.welshblackrestapi.model.Comment;
@@ -28,6 +30,8 @@ import java.util.Date;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.EXPIRATION_TIME;
@@ -76,6 +80,7 @@ public class CommentControllerTest {
 
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
+                .alwaysDo(print())
                 .build();
     }
 
@@ -120,6 +125,16 @@ public class CommentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].comment").value(comment1.getComment()))
                 .andExpect(jsonPath("$[1].comment").value(comment3.getComment()));
+    }
+
+    @Test
+    public void getComment_ShouldReturnEmptyListForSpecificCow() throws Exception {
+        cow1.setComments(new ArrayList<>());
+        Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(null);
+        mockMvc.perform(get("/cows/" + cow1.getNumber() + "/comments")
+                .header("Authorization", obtainToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
     }
 
     @Test

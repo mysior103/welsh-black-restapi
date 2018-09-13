@@ -155,6 +155,14 @@ public class CowControllerTest {
                 .andExpect(jsonPath("$.name").value(cow1.getName()))
                 .andExpect(jsonPath("$.number").value(cow1.getNumber()));
     }
+    @Test
+    public void updateCow_ShouldBadRequestIfLackOfCowNumber() throws Exception {
+        cow1.setNumber("");
+        mockMvc.perform(put("/cows/")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(cow1)))
+                .andExpect(status().isBadRequest());
+    }
 
 
 }

@@ -89,16 +89,16 @@ public class BloodTestControllerTest {
                 .sign(HMAC512(SECRET.getBytes()));
         return "Bearer "+token;
     }
-//
-//    @Test
-//    public void save_ReturnBadRequestIfLackOfData() throws Exception {
-//        BloodTest bloodTest = null;
-//        mockMvc.perform(post(DEFAULT_URL)
-//                .header("Authorization",obtainToken())
-//                .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                .content(mapToJson(bloodTest)))
-//                .andExpect(status().isBadRequest());
-//    }
+
+    @Test
+    public void save_ShouldReturnBadRequestIfNumberIsNull() throws Exception {
+        BloodTest bloodTest = new BloodTest(null, true, LocalDate.of(2011, 1, 1));
+        mockMvc.perform(post(DEFAULT_URL)
+                .header("Authorization",obtainToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(bloodTest)))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     public void save_ShouldReturnBadRequestIfLackOfCowNumber() throws Exception {

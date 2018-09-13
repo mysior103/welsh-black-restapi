@@ -52,13 +52,15 @@ public class CowController {
 
     @PutMapping
     public ResponseEntity<Cow> updateCow(@Valid @RequestBody Cow cow) throws URISyntaxException {
-        if (cow.getNumber() != null) {
+        if (cow.getNumber() != "") {
             Cow foundCow = cowService.findByNumber(cow.getNumber());
             if (foundCow != null) {
                 cowService.save(cow);
             } else {
                 createCow(cow);
             }
+        }else {
+            return ResponseEntity.badRequest().build();
         }
         HttpHeaders header = new HttpHeaders();
         header.add("Method", "Updated");
