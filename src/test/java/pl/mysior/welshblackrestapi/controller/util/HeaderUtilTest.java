@@ -13,7 +13,6 @@ public class HeaderUtilTest {
 
     @Test
     public void createAlert_ShouldReturnHeader(){
-
         HttpHeaders header = HeaderUtil.createAlert("message","param");
         Assert.assertEquals(header.get("X-welsh-black-restapi-alert").toString(),"[message]");
         Assert.assertEquals(header.get("X-welsh-black-restapi-params").toString(),"[param]");

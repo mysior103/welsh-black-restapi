@@ -13,8 +13,6 @@ public final class HeaderUtil {
 
     private static final String APPLICATION_NAME = "welsh-black-restapi";
 
-    private HeaderUtil() {
-    }
 
     public static HttpHeaders createAlert(String message, String param) {
         HttpHeaders headers = new HttpHeaders();

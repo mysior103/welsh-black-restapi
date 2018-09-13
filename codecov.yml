@@ -16,3 +16,4 @@ coverage:
     - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthenticationFilter.java"
     - "src/main/java/pl/mysior/welshblackrestapi/security/JWTAuthorizationFilter.java"
     - "src/main/java/pl/mysior/welshblackrestapi/security/SecurityConstants.java"
+    - "src/main/java/pl/mysior/welshblackrestapi/WelshBlackRestapiApplication.java"
