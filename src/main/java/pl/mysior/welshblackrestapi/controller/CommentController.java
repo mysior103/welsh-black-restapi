@@ -35,7 +35,6 @@ public class CommentController {
                     .headers(header)
                     .body(saved);
         } else return ResponseEntity.badRequest().build();
-
     }
 
     @GetMapping(path = "/comments")
@@ -46,7 +45,7 @@ public class CommentController {
     @GetMapping("/{number}/comments")
     public List<Comment> getComments(@PathVariable String number) {
         Cow foundCow = cowService.findByNumber(number);
-        if (foundCow != null && foundCow.getComments() != null) {
+        if (foundCow != null) {
             return foundCow.getComments();
         } else {
             return new ArrayList<>();

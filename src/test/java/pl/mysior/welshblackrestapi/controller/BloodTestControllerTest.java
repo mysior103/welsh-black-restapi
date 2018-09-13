@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.security.JWTAuthenticationFilter;
@@ -41,13 +43,14 @@ import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
-@WebMvcTest({BloodTestController.class, UserController.class, JWTAuthenticationFilter.class})
+@WebMvcTest(BloodTestController.class)
 public class BloodTestControllerTest {
 
     private Cow cow1;
     private Cow cow2;
     private BloodTest bloodTest1;
     private BloodTest bloodTest2;
+    private BloodTest bloodTest3;
 
     private static final String DEFAULT_URL = "/cows/bloodtests";
 
@@ -72,10 +75,11 @@ public class BloodTestControllerTest {
     @Before
     public void before() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-        cow1 = new Cow("PL123", "imie", LocalDate.of(2015, 8, 5), "1324", "13245", "M", "Brazowy", true);
-        cow2 = new Cow("PL1234", "imie2", LocalDate.of(2014, 5, 4), "1324", "13245", "M", "Brazowy", true);
+        cow1 = TestObjectFactory.Cow("PL123");
+        cow2 = TestObjectFactory.Cow("PL1324");
         bloodTest1 = new BloodTest("PL123", true, LocalDate.of(2018, 1, 1));
         bloodTest2 = new BloodTest("PL1234", false, LocalDate.of(2018, 2, 2));
+        bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 2, 2));
 
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
@@ -92,20 +96,18 @@ public class BloodTestControllerTest {
 
     @Test
     public void save_ShouldReturnBadRequestIfNumberIsNull() throws Exception {
-        BloodTest bloodTest = new BloodTest(null, true, LocalDate.of(2011, 1, 1));
         mockMvc.perform(post(DEFAULT_URL)
                 .header("Authorization",obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapToJson(bloodTest)))
+                .content(mapToJson(bloodTest1)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void save_ShouldReturnBadRequestIfLackOfCowNumber() throws Exception {
-        BloodTest bloodTest = new BloodTest("", true, LocalDate.of(2011, 1, 1));
         mockMvc.perform(post(DEFAULT_URL)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapToJson(bloodTest)))
+                .content(mapToJson(bloodTest1)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -149,13 +151,23 @@ public class BloodTestControllerTest {
                 .andExpect(jsonPath("$[1].cowNumber").value(bloodTest2.getCowNumber()));
     }
     @Test
-    public void getBloodTest_ShouldReturnAllBloodTestFromSpecificCow() throws Exception{
-        BloodTest bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 2, 2));
-        when(bloodTestService.findByCow(any(String.class))).thenReturn(new ArrayList<>(Arrays.asList(bloodTest1,bloodTest3)));
+    public void getBloodTests_ShouldReturnAllBloodTestFromSpecificCow() throws Exception{
+       when(bloodTestService.findByCow(any(String.class))).thenReturn(new ArrayList<>(Arrays.asList(bloodTest1,bloodTest3)));
         mockMvc.perform(get("/cows/" + cow1.getNumber() + "/bloodtests")
                 .header("Authorization",obtainToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].cowNumber").value(bloodTest1.getCowNumber()))
                 .andExpect(jsonPath("$[1].cowNumber").value(bloodTest3.getCowNumber()));
+    }
+    @Test
+    public void getLastBloodTests_ShouldReturnOrderedBloodTestsOfAllCows() throws Exception {
+        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest1,bloodTest3)));
+        cow2.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest2)));
+        when(bloodTestService.findLast()).thenReturn(new ArrayList<>(Arrays.asList(bloodTest3, bloodTest2)));
+        mockMvc.perform(get(DEFAULT_URL + "/last")
+                .header("Authorization", obtainToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].cowNumber").value(bloodTest3.getCowNumber()))
+                .andExpect(jsonPath("$[1].cowNumber").value(bloodTest2.getCowNumber()));
     }
 }

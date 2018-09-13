@@ -59,14 +59,13 @@ public class CowController {
             } else {
                 createCow(cow);
             }
-        }else {
+            HttpHeaders header = new HttpHeaders();
+            header.add("Method", "Updated");
+            return ResponseEntity.ok()
+                    .headers(header)
+                    .body(cow);
+        } else {
             return ResponseEntity.badRequest().build();
         }
-        HttpHeaders header = new HttpHeaders();
-        header.add("Method", "Updated");
-        return ResponseEntity.ok()
-                .headers(header)
-                .body(cow);
     }
-
 }

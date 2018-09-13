@@ -148,6 +148,4 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$[0].comment").value(comment3.getComment()))
                 .andExpect(jsonPath("$[1].comment").value(comment2.getComment()));
     }
-
-
 }

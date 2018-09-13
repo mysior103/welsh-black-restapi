@@ -44,7 +44,13 @@ public class BloodTestController {
     }
 
     @GetMapping(path = "/{cowNumber}/bloodtests")
-    public List<BloodTest> getBloodTest(@PathVariable String cowNumber) {
+    public List<BloodTest> getBloodTests(@PathVariable String cowNumber) {
         return bloodTestservice.findByCow(cowNumber);
     }
+
+    @GetMapping(path = "/bloodtests/last")
+    public List<BloodTest> getLastBloodTests(){
+        return bloodTestservice.findLast();
+    }
+
 }
