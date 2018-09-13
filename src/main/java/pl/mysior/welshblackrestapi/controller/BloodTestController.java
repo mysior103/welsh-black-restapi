@@ -24,28 +24,27 @@ public class BloodTestController {
 
     @PostMapping(path = "/bloodtests")
     public ResponseEntity<Cow> save(@Valid @RequestBody BloodTest bloodTest) throws URISyntaxException {
-        if(bloodTest==null)
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(OPERATION, "null", "Lack of request body")).body(null);
-        else if(bloodTest.getCowNumber()=="" || bloodTest.getCowNumber()==null)
+        if (bloodTest.getCowNumber() == "" || bloodTest.getCowNumber() == null)
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(OPERATION, "null", "Lack of cow number")).body(null);
-        else{
+        else {
             Cow saved = bloodTestservice.save(bloodTest);
-            if(saved==null){
-                return ResponseEntity.notFound().headers(HeaderUtil.createFailureAlert(OPERATION,"Not found", "Cow does not exist")).build();
-            }else{
+            if (saved == null) {
+                return ResponseEntity.notFound().headers(HeaderUtil.createFailureAlert(OPERATION, "Not found", "Cow does not exist")).build();
+            } else {
                 return ResponseEntity.created(new URI("/" + saved.getNumber() + "/bloodtests"))
-                        .headers(HeaderUtil.createEntityCreationAlert(OPERATION,saved.getNumber()))
+                        .headers(HeaderUtil.createEntityCreationAlert(OPERATION, saved.getNumber()))
                         .body(saved);
             }
         }
     }
+
     @GetMapping(path = "/bloodtests")
     public List<BloodTest> getAllBloodTests() {
         return bloodTestservice.findAll();
     }
 
     @GetMapping(path = "/{cowNumber}/bloodtests")
-    public List<BloodTest> getBloodTest(@PathVariable String cowNumber){
+    public List<BloodTest> getBloodTest(@PathVariable String cowNumber) {
         return bloodTestservice.findByCow(cowNumber);
     }
 }

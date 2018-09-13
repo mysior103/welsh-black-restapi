@@ -18,7 +18,6 @@ public class WelshBlackRestapiApplicationTests {
 		Assert.assertNotNull(welshBlackRestapiApplication);
 	}
 
-
 	@Test
 	public void creatingBCryptPasswordEncoderBean(){
 		Assert.assertNotNull(welshBlackRestapiApplication.bCryptPasswordEncoder());

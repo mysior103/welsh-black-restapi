@@ -75,7 +75,6 @@ public class CowControllerTest {
                 .build();
     }
 
-
     @Test
     public void contextLoads() {
         assertNotNull(cowService);
@@ -138,5 +137,24 @@ public class CowControllerTest {
                 .andExpect(jsonPath("$.name").value(cow1.getName()))
                 .andExpect(jsonPath("$.number").value(cow1.getNumber()));
     }
+
+    @Test
+    public void updateCow_ShouldReturnCreateNewCowIfNotExist() throws Exception {
+        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
+        mockMvc.perform(post("/cows/")
+                .header("Authorization", obtainToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(cow1)))
+                .andExpect(jsonPath("$.name").value(cow1.getName()))
+                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+        Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(cow1);
+        cow1.setName("ChangedName");
+        mockMvc.perform(put("/cows/")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(cow1)))
+                .andExpect(jsonPath("$.name").value(cow1.getName()))
+                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+    }
+
 
 }

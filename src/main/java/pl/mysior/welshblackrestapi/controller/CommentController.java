@@ -27,17 +27,15 @@ public class CommentController {
 
     @PostMapping(path = "/comments")
     public ResponseEntity<Cow> addComment(@Valid @RequestBody Comment comment) throws URISyntaxException {
-
         Cow saved = commentService.save(comment);
         HttpHeaders header = new HttpHeaders();
         header.add("Method", "Created");
-        if(saved!=null) {
+        if (saved != null) {
             return ResponseEntity.created(new URI(saved.getNumber() + "/comments"))
                     .headers(header)
                     .body(saved);
-        }else{
-            return ResponseEntity.badRequest().build();
-        }
+        } else return ResponseEntity.badRequest().build();
+
     }
 
     @GetMapping(path = "/comments")
@@ -46,17 +44,17 @@ public class CommentController {
     }
 
     @GetMapping("/{number}/comments")
-    public List<Comment> getComment(@PathVariable String number) {
+    public List<Comment> getComments(@PathVariable String number) {
         Cow foundCow = cowService.findByNumber(number);
-        List<Comment> comments = new ArrayList<>();
-        if (foundCow != null && foundCow.getComments()!=null) {
-            comments.addAll(foundCow.getComments());
+        if (foundCow != null && foundCow.getComments() != null) {
+            return foundCow.getComments();
+        } else {
+            return new ArrayList<>();
         }
-        return comments;
     }
 
     @GetMapping(path = "/comments/last")
-    public List<Comment> getLastComments(){
+    public List<Comment> getLastComments() {
         return commentService.findLast();
     }
 

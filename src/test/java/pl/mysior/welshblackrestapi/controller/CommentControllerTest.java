@@ -80,6 +80,16 @@ public class CommentControllerTest {
     }
 
     @Test
+    public void addComment_ShouldReturnBadRequestIfLackOfCow() throws Exception {
+        Mockito.when(commentService.save(comment1)).thenReturn(null);
+        mockMvc.perform(post("/cows/comments")
+                .header("Authorization", obtainToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(comment1)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void addComment_ShouldReturnRelatedCowWithComment() throws Exception {
         Mockito.when(commentService.save(comment1)).thenReturn(cow1);
         mockMvc.perform(post("/cows/comments")
