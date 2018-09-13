@@ -36,10 +36,9 @@ public final class HeaderUtil {
     }
 
     public static HttpHeaders createFailureAlert(String entityName, String errorKey, String defaultMessage) {
-        log.error("Entity processing failed, {}", defaultMessage);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-zooCrudApiApp-error", "error." + errorKey);
-        headers.add("X-zooCrudApiApp-params", entityName);
+        headers.add("X-welsh-black-restapi-error", "error." + errorKey);
+        headers.add("X-welsh-black-restapi-params", entityName);
         return headers;
     }
 }
