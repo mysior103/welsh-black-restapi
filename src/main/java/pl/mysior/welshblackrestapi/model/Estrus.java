@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 @Data
 @Document
-public class Estrus {
+public class Estrus implements Comparable<Estrus> {
 
     private String cowNumber;
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -27,5 +27,11 @@ public class Estrus {
     }
 
     public Estrus() {
+    }
+
+
+    @Override
+    public int compareTo(Estrus o) {
+        return getEstrusDate().compareTo(o.getEstrusDate());
     }
 }

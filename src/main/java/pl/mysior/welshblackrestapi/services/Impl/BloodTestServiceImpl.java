@@ -16,7 +16,7 @@ import java.util.Optional;
 public class BloodTestServiceImpl implements BloodTestService {
 
     @Autowired
-    CowRepository cowRepository;
+    private CowRepository cowRepository;
 
     @Override
     public Cow save(BloodTest bloodTest) {

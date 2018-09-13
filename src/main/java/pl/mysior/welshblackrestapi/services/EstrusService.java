@@ -10,6 +10,8 @@ public interface EstrusService {
 
     List<Estrus> findAll();
 
+    List<Estrus> findLast();
+
     List<Estrus> findByCow(String cowNumber);
 
 }

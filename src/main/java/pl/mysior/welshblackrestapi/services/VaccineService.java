@@ -10,6 +10,8 @@ public interface VaccineService {
 
     List<Vaccine> findAll();
 
+    List<Vaccine> findLast();
+
     List<Vaccine> findByCow(String cowNumber);
 
 }

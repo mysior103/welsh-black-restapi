@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Estrus;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -67,4 +67,45 @@ public class EstrusServiceTest {
         assertEquals(results.getEstruses().size(), 2);
     }
 
+    @Test
+    public void findAll_ShouldReturnListOfAllEstruses() {
+        cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
+        cow2.setEstruses(new ArrayList<>(Collections.singletonList(estrus2)));
+
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<Estrus> result = estrusService.findAll();
+        assertEquals(result.size(), 2);
+    }
+
+    @Test
+    public void findAll_ShouldReturnOrderedListOfAllEstruses() {
+        cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
+        cow2.setEstruses(new ArrayList<>(Collections.singletonList(estrus2)));
+
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<Estrus> result = estrusService.findAll();
+        assertTrue(result.get(0).getEstrusDate().isBefore(result.get(1).getEstrusDate()));
+    }
+
+    @Test
+    public void findLast_ShouldReturnLastEstrusOfCow() {
+        cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
+        cow2.setEstruses(new ArrayList<>(Collections.singletonList(estrus2)));
+        cow1.getEstruses().add(estrus3);
+
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<Estrus> result = estrusService.findLast();
+        assertEquals(result.get(0).getEstrusDate(), estrus3.getEstrusDate());
+        assertEquals(result.get(1).getEstrusDate(), estrus2.getEstrusDate());
+    }
+
+    @Test
+    public void findByCow_shouldReturnOrderedListOfAllEstrusesOfSpecificCow(){
+        cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
+        cow1.getEstruses().add(estrus3);
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
+        List<Estrus> result = estrusService.findByCow(cow1.getNumber());
+        assertEquals(result.get(0).getEstrusDate(), estrus1.getEstrusDate());
+        assertEquals(result.get(1).getEstrusDate(), estrus3.getEstrusDate());
+    }
 }

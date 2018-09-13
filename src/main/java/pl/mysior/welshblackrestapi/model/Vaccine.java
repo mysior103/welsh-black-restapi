@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 @Data
 @Document
-public class Vaccine {
+public class Vaccine implements Comparable<Vaccine> {
 
     private String cowNumber;
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -28,5 +28,10 @@ public class Vaccine {
     }
 
     public Vaccine() {
+    }
+
+    @Override
+    public int compareTo(Vaccine o) {
+        return getVaccineDate().compareTo(o.getVaccineDate());
     }
 }
