@@ -25,9 +25,11 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.mysior.welshblackrestapi.JsonMapper.mapToJson;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.EXPIRATION_TIME;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 
@@ -82,6 +84,36 @@ public class DewormingControllerTest {
                 .content(JsonMapper.mapToJson(deworming1)))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    public void addDeworming_ShouldReturnBadRequestIfNumberIsEmpty() throws Exception {
+        deworming1.setCowNumber("");
+        mockMvc.perform(post(DEFAULT_URL)
+                .header("Authorization", obtainToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(JsonMapper.mapToJson(deworming1)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void save_ShouldReturnNotFoundIfCowDoesNotExist() throws Exception {
+        when(dewormingService.save(deworming1)).thenReturn(null);
+        mockMvc.perform(post(DEFAULT_URL)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(deworming1)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void addDeworming_ShouldReturnIsCreated() throws Exception {
+        when(dewormingService.save(deworming1)).thenReturn(cow1);
+        mockMvc.perform(post(DEFAULT_URL)
+                .header("Authorization", obtainToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(JsonMapper.mapToJson(deworming1)))
+                .andExpect(status().isCreated());
+    }
+
+
 
 
 

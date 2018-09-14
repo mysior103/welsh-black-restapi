@@ -13,6 +13,7 @@ import pl.mysior.welshblackrestapi.services.DewormingService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping(path = "/cows")
@@ -24,15 +25,18 @@ public class DewormingController {
     private DewormingService dewormingService;
 
     @PostMapping(path = "/dewormings")
-    public ResponseEntity<Cow> addDeworming(@Valid @RequestBody Deworming deworming){
-        if(deworming.getCowNumber() == "" || deworming.getCowNumber() == null){
+    public ResponseEntity<Cow> addDeworming(@Valid @RequestBody Deworming deworming) throws URISyntaxException {
+        if (deworming.getCowNumber() == "" || deworming.getCowNumber() == null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(OPERATION, "null", "Lack of cow number")).body(null);
-        }
-        else{
-            return null;
-//            return ResponseEntity.created(new URI("/" + saved.getNumber() + "/bloodtests"))
-//                    .headers(HeaderUtil.createEntityCreationAlert(OPERATION, saved.getNumber()))
-//                    .body(saved);
+        } else {
+            Cow saved = dewormingService.save(deworming);
+            if (saved == null) {
+                return ResponseEntity.notFound().headers(HeaderUtil.createFailureAlert(OPERATION, "Not found", "Cow does not exist")).build();
+            } else {
+                return ResponseEntity.created(new URI("/" + saved.getNumber() + "/bloodtests"))
+                        .headers(HeaderUtil.createEntityCreationAlert(OPERATION, saved.getNumber()))
+                        .body(saved);
+            }
         }
     }
 }
