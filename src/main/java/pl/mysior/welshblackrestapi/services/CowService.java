@@ -1,8 +1,8 @@
 package pl.mysior.welshblackrestapi.services;
 
-import pl.mysior.welshblackrestapi.model.Cow;
+        import pl.mysior.welshblackrestapi.model.Cow;
 
-import java.util.List;
+        import java.util.List;
 public interface CowService {
     Cow save(Cow cow);
 

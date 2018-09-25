@@ -17,16 +17,16 @@ import java.util.List;
 @RequestMapping(path = "/cows")
 public class BloodTestController {
 
-    private static final String OPERATION = "Bloodtest";
+    private static final String OPERATION = "BloodTest";
 
     @Autowired
     private BloodTestService bloodTestservice;
 
     @PostMapping(path = "/bloodtests")
-    public ResponseEntity<Cow> save(@Valid @RequestBody BloodTest bloodTest) throws URISyntaxException {
-        if (bloodTest.getCowNumber() == "" || bloodTest.getCowNumber() == null)
+    public ResponseEntity<Cow> addBloodTest(@Valid @RequestBody BloodTest bloodTest) throws URISyntaxException {
+        if (bloodTest.getCowNumber() == "" || bloodTest.getCowNumber() == null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(OPERATION, "null", "Lack of cow number")).body(null);
-        else {
+        } else {
             Cow saved = bloodTestservice.save(bloodTest);
             if (saved == null) {
                 return ResponseEntity.notFound().headers(HeaderUtil.createFailureAlert(OPERATION, "Not found", "Cow does not exist")).build();
@@ -49,7 +49,7 @@ public class BloodTestController {
     }
 
     @GetMapping(path = "/bloodtests/last")
-    public List<BloodTest> getLastBloodTests(){
+    public List<BloodTest> getLastBloodTests() {
         return bloodTestservice.findLast();
     }
 

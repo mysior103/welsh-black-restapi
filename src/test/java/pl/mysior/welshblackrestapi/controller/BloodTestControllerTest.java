@@ -1,12 +1,9 @@
 package pl.mysior.welshblackrestapi.controller;
 
 import com.auth0.jwt.JWT;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,13 +13,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import pl.mysior.welshblackrestapi.JsonMapper;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.security.JWTAuthenticationFilter;
-import pl.mysior.welshblackrestapi.security.user.ApplicationUserRepository;
-import pl.mysior.welshblackrestapi.security.user.UserController;
 import pl.mysior.welshblackrestapi.services.BloodTestService;
 
 import java.time.LocalDate;
@@ -36,9 +29,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static pl.mysior.welshblackrestapi.JsonMapper.mapToJson;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.EXPIRATION_TIME;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
@@ -83,11 +74,10 @@ public class BloodTestControllerTest {
                 .webAppContextSetup(webApplicationContext)
                 .alwaysDo(print())
                 .build();
-
     }
 
     @Test
-    public void save_ShouldReturnBadRequestIfNumberIsNull() throws Exception {
+    public void addBloodTest_ShouldReturnBadRequestIfNumberIsNull() throws Exception {
         bloodTest1.setCowNumber(null);
         mockMvc.perform(post(DEFAULT_URL)
                 .header("Authorization", obtainToken())
@@ -97,7 +87,7 @@ public class BloodTestControllerTest {
     }
 
     @Test
-    public void save_ShouldReturnBadRequestIfLackOfCowNumber() throws Exception {
+    public void addBloodTest_ShouldReturnBadRequestIfLackOfCowNumber() throws Exception {
         bloodTest1.setCowNumber("");
         mockMvc.perform(post(DEFAULT_URL)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -106,7 +96,7 @@ public class BloodTestControllerTest {
     }
 
     @Test
-    public void save_ShouldReturnNotFoundIfCowDoesNotExist() throws Exception {
+    public void addBloodTest_ShouldReturnNotFoundIfCowDoesNotExist() throws Exception {
         when(bloodTestService.save(bloodTest1)).thenReturn(null);
         mockMvc.perform(post(DEFAULT_URL)
                 .header("Authorization", obtainToken())
@@ -116,14 +106,15 @@ public class BloodTestControllerTest {
     }
 
     @Test
-    public void save_ShouldReturnIsCreated() throws Exception {
-        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest1)));
+    public void addBloodTest_ShouldReturnIsCreatedAndRelatedCowWithBloodTests() throws Exception {
+        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest1,bloodTest2)));
         when(bloodTestService.save(bloodTest1)).thenReturn(cow1);
         mockMvc.perform(post(DEFAULT_URL)
                 .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(bloodTest1)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.bloodTests[0].cowNumber").value(cow1.getBloodTests().get(0).getCowNumber()));
     }
 
     @Test

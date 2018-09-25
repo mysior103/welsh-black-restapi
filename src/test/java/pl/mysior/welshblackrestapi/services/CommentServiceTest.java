@@ -24,6 +24,7 @@ public class CommentServiceTest {
 
     private Comment comment1;
     private Comment comment2;
+    private Comment comment3;
     private Cow cow1;
     private Cow cow2;
 
@@ -39,6 +40,8 @@ public class CommentServiceTest {
         cow2 = TestObjectFactory.Cow("PL1234");
         comment1 = new Comment("PL123", "This is a comment1!", LocalDate.of(2018, 1, 1));
         comment2 = new Comment("PL1234", "This is a comment2!", LocalDate.of(2017, 3, 4));
+        comment3 = new Comment("PL123", "This is a comment3!", LocalDate.of(2019, 3, 4));
+
     }
 
     @Test
@@ -88,13 +91,20 @@ public class CommentServiceTest {
     public void findLast_ShouldReturnLastCommentOfCow() {
         cow1.setComments(new ArrayList<>(Collections.singletonList(comment1)));
         cow2.setComments(new ArrayList<>(Collections.singletonList(comment2)));
-        Comment comment3 = new Comment("PL123", "This is a comment3!", LocalDate.of(2019, 3, 4));
         cow1.getComments().add(comment3);
 
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Comment> result = commentService.findLast();
         assertEquals(result.get(0).getComment(), comment3.getComment());
         assertEquals(result.get(1).getComment(), comment2.getComment());
+    }
 
+    @Test
+    public void findByCow_shouldReturnOrderedListOfCommentsOfSpecificCow() {
+        cow1.setComments(new ArrayList<>(Arrays.asList(comment1,comment3)));
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
+        List<Comment> result = commentService.findByCow(cow1.getNumber());
+        assertEquals(result.get(0).getCommentDate(), comment1.getCommentDate());
+        assertEquals(result.get(1).getCommentDate(), comment3.getCommentDate());
     }
 }

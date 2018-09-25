@@ -2,6 +2,7 @@ package pl.mysior.welshblackrestapi.services.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
@@ -48,6 +49,21 @@ public class DewormingServiceImpl implements DewormingService {
     }
 
     @Override
+    public List<Deworming> findLast() {
+        List<Deworming> allDewormings = findAll();
+        Collections.reverse(allDewormings);
+
+        List<Deworming> lastDeworming = new ArrayList<>();
+
+        for (Deworming d : allDewormings) {
+            if (!containsName(lastDeworming, d.getCowNumber())) {
+                lastDeworming.add(d);
+            }
+        }
+        return lastDeworming;
+    }
+
+    @Override
     public List<Deworming> findByCow(String cowNumber) {
         List<Deworming> dewormingList = new ArrayList<>();
         Optional<Cow> optionalCow = cowRepository.findById(cowNumber);
@@ -59,5 +75,9 @@ public class DewormingServiceImpl implements DewormingService {
             dewormingList.addAll(cow.getDewormings());
         }
         return dewormingList;
+    }
+
+    private boolean containsName(final List<Deworming> list, final String number) {
+        return list.stream().filter(o -> o.getCowNumber().equals(number)).findFirst().isPresent();
     }
 }

@@ -6,10 +6,11 @@ import pl.mysior.welshblackrestapi.model.Deworming;
 import java.util.List;
 
 public interface DewormingService {
-
     Cow save(Deworming deworming);
 
     List<Deworming> findAll();
+
+    List<Deworming> findLast();
 
     List<Deworming> findByCow(String cowNumber);
 

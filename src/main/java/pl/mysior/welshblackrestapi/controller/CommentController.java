@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.services.CommentService;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping(path = "/cows")
 public class CommentController {
 
+    private static final String OPERATION = "Comment";
 
     @Autowired
     CowService cowService;
@@ -27,15 +29,20 @@ public class CommentController {
 
     @PostMapping(path = "/comments")
     public ResponseEntity<Cow> addComment(@Valid @RequestBody Comment comment) throws URISyntaxException {
-        Cow saved = commentService.save(comment);
-        HttpHeaders header = new HttpHeaders();
-        header.add("Method", "Created");
-        if (saved != null) {
-            return ResponseEntity.created(new URI(saved.getNumber() + "/comments"))
-                    .headers(header)
-                    .body(saved);
-        } else return ResponseEntity.badRequest().build();
+        if (comment.getCowNumber() == "" || comment.getCowNumber() == null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(OPERATION, "null", "Lack of cow number")).body(null);
+        } else {
+            Cow saved = commentService.save(comment);
+            if (saved == null) {
+                return ResponseEntity.notFound().headers(HeaderUtil.createFailureAlert(OPERATION, "Not found", "Cow does not exist")).build();
+            } else {
+                return ResponseEntity.created(new URI("/" + saved.getNumber() + "/comments"))
+                        .headers(HeaderUtil.createEntityCreationAlert(OPERATION, saved.getNumber()))
+                        .body(saved);
+            }
+        }
     }
+
 
     @GetMapping(path = "/comments")
     public List<Comment> getAllComments() {

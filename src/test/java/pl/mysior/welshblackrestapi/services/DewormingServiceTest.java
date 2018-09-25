@@ -14,10 +14,7 @@ import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -93,6 +90,17 @@ public class DewormingServiceTest {
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Deworming> result = dewormingService.findAll();
         assertTrue(result.get(0).getDewormingDate().isAfter(result.get(1).getDewormingDate()));
+    }
+
+    @Test
+    public void findLast_ShouldReturnLastDewormingOfCow() {
+        cow1.setDewormings(new ArrayList<>(Arrays.asList(deworming1)));
+        cow2.setDewormings(new ArrayList<>(Arrays.asList(deworming2)));
+        cow1.getDewormings().add(deworming3);
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<Deworming> result = dewormingService.findLast();
+        assertEquals(result.get(0).getDewormingDate(), deworming1.getDewormingDate());
+        assertEquals(result.get(1).getDewormingDate(), deworming2.getDewormingDate());
     }
 
     @Test

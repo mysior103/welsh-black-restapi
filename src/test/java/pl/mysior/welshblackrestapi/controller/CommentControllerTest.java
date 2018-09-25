@@ -27,12 +27,14 @@ import java.util.Arrays;
 import java.util.Date;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.mysior.welshblackrestapi.JsonMapper.mapToJson;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.EXPIRATION_TIME;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 
@@ -40,10 +42,13 @@ import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 @WebMvcTest(CommentController.class)
 public class CommentControllerTest {
 
+    private static final String DEFAULT_URL = "/cows/comments";
+
     private Cow cow1;
     private Cow cow2;
     private Comment comment1;
     private Comment comment2;
+    private Comment comment3;
 
     @Autowired
     private MockMvc mockMvc;
@@ -72,10 +77,9 @@ public class CommentControllerTest {
     public void before() {
         cow1 = TestObjectFactory.Cow("PL123");
         cow2 = TestObjectFactory.Cow("PL1234");
-        comment1 = new Comment("PL123", "This is a comment1!", LocalDate.of(2018, 4, 5));
-        comment2 = new Comment("PL1234", "This is a comment2!", LocalDate.of(2017, 3, 4));
-        cow1.setComments(new ArrayList<>(Arrays.asList(comment1)));
-        cow2.setComments(new ArrayList<>(Arrays.asList(comment2)));
+        comment1 = new Comment("PL123", "This is a comment1!", LocalDate.of(2018, 1, 1));
+        comment2 = new Comment("PL1234", "This is a comment2!", LocalDate.of(2018, 2, 2));
+        comment3 = new Comment("PL123", "This is a comment3!", LocalDate.of(2019, 2, 2));
 
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
@@ -84,9 +88,9 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void addComment_ShouldReturnBadRequestIfLackOfCow() throws Exception {
-        Mockito.when(commentService.save(comment1)).thenReturn(null);
-        mockMvc.perform(post("/cows/comments")
+    public void addComment_ShouldReturnBadRequestIfNumberIsNull() throws Exception {
+        comment1.setCowNumber(null);
+        mockMvc.perform(post(DEFAULT_URL)
                 .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(comment1)))
@@ -94,9 +98,30 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void addComment_ShouldReturnRelatedCowWithComment() throws Exception {
-        Mockito.when(commentService.save(comment1)).thenReturn(cow1);
-        mockMvc.perform(post("/cows/comments")
+    public void addComment_ShouldReturnBadRequestIfLackOfCowNumber() throws Exception {
+        comment1.setCowNumber("");
+        mockMvc.perform(post(DEFAULT_URL)
+                .header("Authorization", obtainToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(comment1)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addComment_ShouldReturnNotFoundIfCowDoesNotExist() throws Exception {
+        when(commentService.save(comment1)).thenReturn(null);
+        mockMvc.perform(post(DEFAULT_URL)
+                .header("Authorization", obtainToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapToJson(comment1)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void addComment_ShouldReturnIsCreatedAndRelatedCowWithComment() throws Exception {
+        cow1.setComments(new ArrayList<>(Arrays.asList(comment1,comment2)));
+        when(commentService.save(comment1)).thenReturn(cow1);
+        mockMvc.perform(post(DEFAULT_URL)
                 .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(comment1)))
@@ -105,9 +130,18 @@ public class CommentControllerTest {
     }
 
     @Test
+    public void getAllComments_ShouldReturnEmptyListIfLackOfComments() throws Exception {
+        when(commentService.findAll()).thenReturn(new ArrayList<>());
+        mockMvc.perform(get(DEFAULT_URL)
+                .header("Authorization", obtainToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
+    }
+
+    @Test
     public void getAllComments_ShouldReturnListOfAllComments() throws Exception {
         Mockito.when(commentService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(comment1, comment2)));
-        mockMvc.perform(get("/cows/comments")
+        mockMvc.perform(get(DEFAULT_URL)
                 .header("Authorization", obtainToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].comment").value(comment1.getComment()))
@@ -116,8 +150,9 @@ public class CommentControllerTest {
 
     @Test
     public void getComment_ShouldReturnOrderedListOfCommentsOfSpecificCow() throws Exception {
-        Comment comment3 = new Comment("PL123", "This is a comment3!", LocalDate.of(2018, 12, 2));
+        cow1.setComments(new ArrayList<>(Arrays.asList(comment1)));
         cow1.getComments().add(comment3);
+
         Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(cow1);
         mockMvc.perform(get("/cows/" + cow1.getNumber() + "/comments")
                 .header("Authorization", obtainToken()))
@@ -139,9 +174,10 @@ public class CommentControllerTest {
     @Test
     public void getLastComment_ShouldReturnOrderedLastCommentOfAllCows() throws Exception {
         Comment comment3 = new Comment("PL123", "This is a comment3!", LocalDate.of(2018, 12, 2));
-        cow1.getComments().add(comment3);
+        cow1.setComments(new ArrayList<>(Arrays.asList(comment1,comment3)));
+        cow2.setComments(new ArrayList<>(Arrays.asList(comment2)));
         Mockito.when(commentService.findLast()).thenReturn(new ArrayList<>(Arrays.asList(comment3, comment2)));
-        mockMvc.perform(get("/cows/comments/last")
+        mockMvc.perform(get(DEFAULT_URL + "/last")
                 .header("Authorization", obtainToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].comment").value(comment3.getComment()))

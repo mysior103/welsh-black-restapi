@@ -2,10 +2,7 @@ package pl.mysior.welshblackrestapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Deworming;
@@ -14,6 +11,7 @@ import pl.mysior.welshblackrestapi.services.DewormingService;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/cows")
@@ -33,10 +31,27 @@ public class DewormingController {
             if (saved == null) {
                 return ResponseEntity.notFound().headers(HeaderUtil.createFailureAlert(OPERATION, "Not found", "Cow does not exist")).build();
             } else {
-                return ResponseEntity.created(new URI("/" + saved.getNumber() + "/bloodtests"))
+                return ResponseEntity.created(new URI("/" + saved.getNumber() + "/dewormings"))
                         .headers(HeaderUtil.createEntityCreationAlert(OPERATION, saved.getNumber()))
                         .body(saved);
             }
         }
     }
+
+    @GetMapping(path = "/dewormings")
+    public List<Deworming> getAllDewormings() {
+        return dewormingService.findAll();
+    }
+
+    @GetMapping(path = "/{cowNumber}/dewormings")
+    public List<Deworming> getDewormings(@PathVariable String cowNumber){
+        return dewormingService.findByCow(cowNumber);
+    }
+
+    @GetMapping(path = "/dewormings/last")
+    public List<Deworming> getLastDewormings() {
+        return dewormingService.findLast();
+    }
+
+
 }

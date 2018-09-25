@@ -69,6 +69,18 @@ public class CommentServiceImpl implements CommentService {
         return lastComments;
     }
 
+    @Override
+    public List<Comment> findByCow(String cowNumber) {
+        Optional<Cow> optionalCow = cowRepository.findById(cowNumber);
+        Cow c = optionalCow.orElse(null);
+        List<Comment> comments = new ArrayList<>();
+        if (c.getComments() != null) {
+            comments = c.getComments();
+            comments.sort(Comment::compareTo);
+        }
+        return comments;
+    }
+
     private boolean containsName(final List<Comment> list, final String number) {
         return list.stream().anyMatch(o -> o.getCowNumber().equals(number));
     }

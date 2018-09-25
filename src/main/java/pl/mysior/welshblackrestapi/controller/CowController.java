@@ -28,7 +28,7 @@ public class CowController {
     }
 
     @PostMapping
-    public ResponseEntity<Cow> createCow(@Valid @RequestBody Cow cow) throws URISyntaxException {
+    public ResponseEntity<Cow> addCow(@Valid @RequestBody Cow cow) throws URISyntaxException {
 
         Cow saved = cowService.save(cow);
         HttpHeaders header = new HttpHeaders();
@@ -57,7 +57,7 @@ public class CowController {
             if (foundCow != null) {
                 cowService.save(cow);
             } else {
-                createCow(cow);
+                addCow(cow);
             }
             HttpHeaders header = new HttpHeaders();
             header.add("Method", "Updated");

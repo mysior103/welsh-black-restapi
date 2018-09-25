@@ -99,7 +99,6 @@ public class VaccineServiceTest {
 
     @Test
     public void findByCow_shouldReturnOrderedListOfVaccinesOfSpecificCow() {
-
         cow1.setVaccines(new ArrayList<>(Collections.singletonList(vaccine1)));
         cow1.getVaccines().add(vaccine3);
         doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
