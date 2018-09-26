@@ -39,7 +39,7 @@ public class DewormingServiceImpl implements DewormingService {
         List<Cow> cowList = cowRepository.findAll();
         List<Deworming> dewormingList = new ArrayList<>();
         for (Cow c : cowList) {
-            if (c.getDewormings() != null && !c.getDewormings().isEmpty()) {
+            if (c.getDewormings() != null) {
                 dewormingList.addAll(c.getDewormings());
             }
         }
