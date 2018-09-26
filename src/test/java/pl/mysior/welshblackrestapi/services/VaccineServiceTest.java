@@ -18,6 +18,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -69,6 +70,13 @@ public class VaccineServiceTest {
     }
 
     @Test
+    public void findAll_ShouldReturnEmptyListIfNoVaccinesInCows() {
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<Vaccine> result = vaccineService.findAll();
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void findAll_ShouldReturnListOfAllVaccines() {
         cow1.setVaccines(new ArrayList<>(Collections.singletonList(vaccine1)));
         cow2.setVaccines(new ArrayList<>(Collections.singletonList(vaccine2)));
@@ -95,6 +103,13 @@ public class VaccineServiceTest {
         List<Vaccine> result = vaccineService.findLast();
         assertEquals(result.get(0).getVaccineDate(), vaccine2.getVaccineDate());
         assertEquals(result.get(1).getVaccineDate(), vaccine3.getVaccineDate());
+    }
+
+    @Test
+    public void findByCow_ShouldReturnEmptyListIfVaccinesDoesNotExistForSpecificCow() {
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(any(String.class));
+        List<Vaccine> result = vaccineService.findByCow(cow1.getNumber());
+        assertTrue(result.isEmpty());
     }
 
     @Test

@@ -18,6 +18,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,6 +68,13 @@ public class BloodTestServiceTest {
     }
 
     @Test
+    public void findAll_ShouldReturnEmptyListWhenLackOfBloodTests(){
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<BloodTest> result = bloodTestService.findAll();
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void findAll_ShouldReturnListOfAllBloodTests() {
         cow1.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest1)));
         cow2.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest2)));
@@ -100,7 +108,14 @@ public class BloodTestServiceTest {
     }
 
     @Test
-    public void findByCow_shouldReturnOrderedListOfAllBloodTestsOfSpecificCow() {
+    public void findByCow_ShouldReturnEmptyListWhenLackOfBloodTestsForSpecificCow(){
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(any(String.class));
+        List<BloodTest> result = bloodTestService.findByCow(cow1.getNumber());
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void findByCow_ShouldReturnOrderedListOfAllBloodTestsOfSpecificCow() {
         cow1.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest1)));
         BloodTest bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 8, 8));
         cow1.getBloodTests().add(bloodTest3);

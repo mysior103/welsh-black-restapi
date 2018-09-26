@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
 import java.time.LocalDate;
@@ -68,6 +69,13 @@ public class CommentServiceTest {
     }
 
     @Test
+    public void findAll_ShouldReturnEmptyListIfNoCommentsInCows() {
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<Comment> result = commentService.findAll();
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void findAll_ShouldReturnListOfAllComments() {
         cow1.setComments(new ArrayList<>(Collections.singletonList(comment1)));
         cow2.setComments(new ArrayList<>(Collections.singletonList(comment2)));
@@ -97,6 +105,13 @@ public class CommentServiceTest {
         List<Comment> result = commentService.findLast();
         assertEquals(result.get(0).getComment(), comment3.getComment());
         assertEquals(result.get(1).getComment(), comment2.getComment());
+    }
+
+    @Test
+    public void findByCow_ShouldReturnEmptyListIfCommentDoesNotExistForSpecificCow() {
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(any(String.class));
+        List<Comment> result = commentService.findByCow(cow1.getNumber());
+        assertTrue(result.isEmpty());
     }
 
     @Test

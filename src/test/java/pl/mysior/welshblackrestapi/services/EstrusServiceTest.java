@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.model.Estrus;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
@@ -70,6 +71,13 @@ public class EstrusServiceTest {
     }
 
     @Test
+    public void findAll_ShouldReturnEmptyListIfNoEstrusesInCows() {
+        doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
+        List<Estrus> result = estrusService.findAll();
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void findAll_ShouldReturnListOfAllEstruses() {
         cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
         cow2.setEstruses(new ArrayList<>(Collections.singletonList(estrus2)));
@@ -99,6 +107,13 @@ public class EstrusServiceTest {
         List<Estrus> result = estrusService.findLast();
         assertEquals(result.get(0).getEstrusDate(), estrus3.getEstrusDate());
         assertEquals(result.get(1).getEstrusDate(), estrus2.getEstrusDate());
+    }
+
+    @Test
+    public void findByCow_ShouldReturnEmptyListIfEstrusesDoesNotExistForSpecificCow() {
+        doReturn(Optional.of(cow1)).when(cowRepository).findById(any(String.class));
+        List<Estrus> result = estrusService.findByCow(cow1.getNumber());
+        assertTrue(result.isEmpty());
     }
 
     @Test
