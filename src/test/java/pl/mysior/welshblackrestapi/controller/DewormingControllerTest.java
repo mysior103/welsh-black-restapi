@@ -1,12 +1,9 @@
 package pl.mysior.welshblackrestapi.controller;
 
 import com.auth0.jwt.JWT;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +19,6 @@ import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.services.DewormingService;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.EXPIRATION_TIME;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 
@@ -138,7 +132,7 @@ public class DewormingControllerTest {
         cow1.setDewormings(new ArrayList<>(Arrays.asList(deworming1)));
         cow2.setDewormings(new ArrayList<>(Arrays.asList(deworming2)));
         when(dewormingService.findAll()).thenReturn(new ArrayList<>(Arrays.asList(deworming1,deworming2)));
-        mockMvc.perform(get("/cows/dewormings")
+        mockMvc.perform(get(DEFAULT_URL)
                 .header("Authorization", obtainToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].quantity").value(deworming1.getQuantity()))
@@ -166,5 +160,4 @@ public class DewormingControllerTest {
                 .andExpect(jsonPath("$[0].quantity").value(deworming3.getQuantity()))
                 .andExpect(jsonPath("$[1].quantity").value(deworming2.getQuantity()));
     }
-
 }
