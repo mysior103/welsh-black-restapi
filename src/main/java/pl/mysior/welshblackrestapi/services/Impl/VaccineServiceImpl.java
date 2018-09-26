@@ -39,7 +39,7 @@ public class VaccineServiceImpl implements VaccineService {
         List<Cow> allCows = cowRepository.findAll();
         List<Vaccine> allVaccines = new ArrayList<>();
         for(Cow c : allCows){
-            if(c.getVaccines()!=null && !c.getVaccines().isEmpty()){
+            if(c.getVaccines()!=null){
                 allVaccines.addAll(c.getVaccines());
             }
         }
@@ -67,7 +67,7 @@ public class VaccineServiceImpl implements VaccineService {
         Optional<Cow> optionalCow = cowRepository.findById(cowNumber);
         Cow c = optionalCow.orElse(null);
         List<Vaccine> vaccines = new ArrayList<>();
-        if(c.getVaccines()!=null && !c.getVaccines().isEmpty()){
+        if(c.getVaccines()!=null){
             vaccines = c.getVaccines();
             vaccines.sort(Vaccine::compareTo);
         }

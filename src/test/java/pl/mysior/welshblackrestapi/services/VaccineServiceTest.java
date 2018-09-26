@@ -41,9 +41,9 @@ public class VaccineServiceTest {
     public void before() {
         cow1 = TestObjectFactory.Cow("PL123");
         cow2 = TestObjectFactory.Cow("PL1234");
-        vaccine1 = new Vaccine("PL123", LocalDate.of(2018, 4, 5));
-        vaccine2 = new Vaccine("PL1234", LocalDate.of(2018, 9, 8));
-        vaccine3 = new Vaccine("Pl123", LocalDate.of(2018, 8, 10));
+        vaccine1 = new Vaccine("PL123", LocalDate.of(2015, 4, 5));
+        vaccine2 = new Vaccine("PL1234", LocalDate.of(2016, 7, 6));
+        vaccine3 = new Vaccine("PL123", LocalDate.of(2017, 1, 1));
     }
 
     @Test
@@ -101,8 +101,8 @@ public class VaccineServiceTest {
         cow1.getVaccines().add(vaccine3);
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Vaccine> result = vaccineService.findLast();
-        assertEquals(result.get(0).getVaccineDate(), vaccine2.getVaccineDate());
-        assertEquals(result.get(1).getVaccineDate(), vaccine3.getVaccineDate());
+        assertEquals(result.get(0).getVaccineDate(), vaccine3.getVaccineDate());
+        assertEquals(result.get(1).getVaccineDate(), vaccine2.getVaccineDate());
     }
 
     @Test

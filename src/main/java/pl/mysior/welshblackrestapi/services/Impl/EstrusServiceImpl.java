@@ -37,7 +37,7 @@ public class EstrusServiceImpl implements EstrusService {
         List<Cow> allCows = cowRepository.findAll();
         List<Estrus> allEstruses = new ArrayList<>();
         for (Cow c : allCows) {
-            if (c.getEstruses() != null && !c.getEstruses().isEmpty()) {
+            if (c.getEstruses() != null) {
                 allEstruses.addAll(c.getEstruses());
             }
         }

@@ -91,7 +91,6 @@ public class EstrusServiceTest {
     public void findAll_ShouldReturnOrderedListOfAllEstruses() {
         cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
         cow2.setEstruses(new ArrayList<>(Collections.singletonList(estrus2)));
-
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Estrus> result = estrusService.findAll();
         assertTrue(result.get(0).getEstrusDate().isBefore(result.get(1).getEstrusDate()));
@@ -102,7 +101,6 @@ public class EstrusServiceTest {
         cow1.setEstruses(new ArrayList<>(Collections.singletonList(estrus1)));
         cow2.setEstruses(new ArrayList<>(Collections.singletonList(estrus2)));
         cow1.getEstruses().add(estrus3);
-
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Estrus> result = estrusService.findLast();
         assertEquals(result.get(0).getEstrusDate(), estrus3.getEstrusDate());
