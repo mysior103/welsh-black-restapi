@@ -57,7 +57,7 @@ public class VaccineServiceTest {
     public void save_shouldCreateNewListAndReturnCowWithSavedVaccines() {
         doReturn(Optional.of(cow1)).when(cowRepository).findById(vaccine1.getCowNumber());
         Cow result = vaccineService.save(vaccine1);
-        assertEquals(result.getVaccines().get(0).getVaccineDate(), vaccine1.getVaccineDate());
+        assertEquals(result.getVaccines().get(0).getActionDate(), vaccine1.getActionDate());
     }
 
     @Test
@@ -91,7 +91,7 @@ public class VaccineServiceTest {
         cow2.setVaccines(new ArrayList<>(Collections.singletonList(vaccine2)));
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Vaccine> result = vaccineService.findAll();
-        assertTrue(result.get(0).getVaccineDate().isBefore(result.get(1).getVaccineDate()));
+        assertTrue(result.get(0).getActionDate().isBefore(result.get(1).getActionDate()));
     }
 
     @Test
@@ -101,8 +101,8 @@ public class VaccineServiceTest {
         cow1.getVaccines().add(vaccine3);
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Vaccine> result = vaccineService.findLast();
-        assertEquals(result.get(0).getVaccineDate(), vaccine3.getVaccineDate());
-        assertEquals(result.get(1).getVaccineDate(), vaccine2.getVaccineDate());
+        assertEquals(result.get(0).getActionDate(), vaccine3.getActionDate());
+        assertEquals(result.get(1).getActionDate(), vaccine2.getActionDate());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class VaccineServiceTest {
         cow1.getVaccines().add(vaccine3);
         doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
         List<Vaccine> result = vaccineService.findByCow(cow1.getNumber());
-        assertEquals(result.get(0).getVaccineDate(), vaccine1.getVaccineDate());
-        assertEquals(result.get(1).getVaccineDate(), vaccine3.getVaccineDate());
+        assertEquals(result.get(0).getActionDate(), vaccine1.getActionDate());
+        assertEquals(result.get(1).getActionDate(), vaccine3.getActionDate());
     }
 }

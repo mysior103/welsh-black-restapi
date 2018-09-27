@@ -13,10 +13,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.mysior.welshblackrestapi.security.user.ApplicationUser;
-import pl.mysior.welshblackrestapi.security.user.ApplicationUserRepository;
+import pl.mysior.welshblackrestapi.repository.ApplicationUserRepository;
 import pl.mysior.welshblackrestapi.security.user.UserServiceImpl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;

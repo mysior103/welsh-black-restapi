@@ -1,6 +1,8 @@
 package pl.mysior.welshblackrestapi.controller;
 
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/cows")
 public class CowController {
-
+    private static final Logger logger = LogManager.getLogger(CowController.class);
     private final CowService cowService;
 
     @Autowired
@@ -33,6 +35,7 @@ public class CowController {
         Cow saved = cowService.save(cow);
         HttpHeaders header = new HttpHeaders();
         header.add("Method", "Created");
+        logger.info("Cow with number" + cow.getNumber() + "has been created");
         return ResponseEntity.created(new URI("/cows/" + saved.getNumber()))
                 .headers(header)
                 .body(saved);

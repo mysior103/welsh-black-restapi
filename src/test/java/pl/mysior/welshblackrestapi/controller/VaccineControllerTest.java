@@ -16,7 +16,6 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.mysior.welshblackrestapi.JsonMapper;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.model.Vaccine;
 import pl.mysior.welshblackrestapi.services.VaccineService;
 

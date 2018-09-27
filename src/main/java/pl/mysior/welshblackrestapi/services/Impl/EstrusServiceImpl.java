@@ -1,9 +1,7 @@
 package pl.mysior.welshblackrestapi.services.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Estrus;
 import pl.mysior.welshblackrestapi.repository.CowRepository;

@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pl.mysior.welshblackrestapi.JsonMapper.mapToJson;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.EXPIRATION_TIME;
 import static pl.mysior.welshblackrestapi.security.SecurityConstants.SECRET;
 

@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
@@ -89,7 +88,7 @@ public class DewormingServiceTest {
         cow2.setDewormings(new ArrayList<>(Arrays.asList(deworming2)));
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Deworming> result = dewormingService.findAll();
-        assertTrue(result.get(0).getDewormingDate().isAfter(result.get(1).getDewormingDate()));
+        assertTrue(result.get(0).getActionDate().isAfter(result.get(1).getActionDate()));
     }
 
     @Test
@@ -99,8 +98,8 @@ public class DewormingServiceTest {
         cow1.getDewormings().add(deworming3);
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Deworming> result = dewormingService.findLast();
-        assertEquals(result.get(0).getDewormingDate(), deworming1.getDewormingDate());
-        assertEquals(result.get(1).getDewormingDate(), deworming2.getDewormingDate());
+        assertEquals(result.get(0).getActionDate(), deworming1.getActionDate());
+        assertEquals(result.get(1).getActionDate(), deworming2.getActionDate());
     }
 
     @Test

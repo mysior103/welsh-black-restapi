@@ -48,13 +48,13 @@ public class BloodTestServiceTest {
     public void save_shouldCreateNewListAndReturnCowWithSavedBloodTest() {
         doReturn(Optional.of(cow1)).when(cowRepository).findById(bloodTest1.getCowNumber());
         Cow result = bloodTestService.save(bloodTest1);
-        assertEquals(result.getBloodTests().get(0).getTestDate(), bloodTest1.getTestDate());
+        assertEquals(result.getBloodTests().get(0).getActionDate(), bloodTest1.getActionDate());
     }
 
     @Test
     public void save_shouldAddBloodTestToListAndReturnCowWithSavedBloodTest() {
         BloodTest bloodTest3 = new BloodTest("PL123", false, LocalDate.of(2019, 8, 8));
-        cow1.setBloodTests(new ArrayList<>(Arrays.asList(bloodTest3)));
+        cow1.setBloodTests(new ArrayList<>(Collections.singletonList(bloodTest3)));
         doReturn(Optional.of(cow1)).when(cowRepository).findById(bloodTest1.getCowNumber());
         Cow result = bloodTestService.save(bloodTest1);
         assertEquals(result.getBloodTests().size(), 2);
@@ -91,7 +91,7 @@ public class BloodTestServiceTest {
 
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<BloodTest> result = bloodTestService.findAll();
-        assertTrue(result.get(0).getTestDate().isBefore(result.get(1).getTestDate()));
+        assertTrue(result.get(0).getActionDate().isBefore(result.get(1).getActionDate()));
     }
 
     @Test
@@ -103,8 +103,8 @@ public class BloodTestServiceTest {
 
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<BloodTest> result = bloodTestService.findLast();
-        assertEquals(result.get(0).getTestDate(), bloodTest3.getTestDate());
-        assertEquals(result.get(1).getTestDate(), bloodTest2.getTestDate());
+        assertEquals(result.get(0).getActionDate(), bloodTest3.getActionDate());
+        assertEquals(result.get(1).getActionDate(), bloodTest2.getActionDate());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class BloodTestServiceTest {
         cow1.getBloodTests().add(bloodTest3);
         doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
         List<BloodTest> result = bloodTestService.findByCow(cow1.getNumber());
-        assertEquals(result.get(0).getTestDate(), bloodTest1.getTestDate());
-        assertEquals(result.get(1).getTestDate(), bloodTest3.getTestDate());
+        assertEquals(result.get(0).getActionDate(), bloodTest1.getActionDate());
+        assertEquals(result.get(1).getActionDate(), bloodTest3.getActionDate());
     }
 }

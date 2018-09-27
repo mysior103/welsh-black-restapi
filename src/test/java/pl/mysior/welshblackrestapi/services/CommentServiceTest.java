@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
 import java.time.LocalDate;
@@ -92,7 +91,7 @@ public class CommentServiceTest {
 
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Comment> result = commentService.findAll();
-        assertTrue(result.get(0).getCommentDate().isBefore(result.get(1).getCommentDate()));
+        assertTrue(result.get(0).getActionDate().isBefore(result.get(1).getActionDate()));
     }
 
     @Test
@@ -119,7 +118,7 @@ public class CommentServiceTest {
         cow1.setComments(new ArrayList<>(Arrays.asList(comment1,comment3)));
         doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
         List<Comment> result = commentService.findByCow(cow1.getNumber());
-        assertEquals(result.get(0).getCommentDate(), comment1.getCommentDate());
-        assertEquals(result.get(1).getCommentDate(), comment3.getCommentDate());
+        assertEquals(result.get(0).getActionDate(), comment1.getActionDate());
+        assertEquals(result.get(1).getActionDate(), comment3.getActionDate());
     }
 }

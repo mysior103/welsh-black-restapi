@@ -8,9 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
-import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.model.Deworming;
 import pl.mysior.welshblackrestapi.model.Estrus;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
@@ -93,7 +91,7 @@ public class EstrusServiceTest {
         cow2.setEstruses(new ArrayList<>(Collections.singletonList(estrus2)));
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Estrus> result = estrusService.findAll();
-        assertTrue(result.get(0).getEstrusDate().isBefore(result.get(1).getEstrusDate()));
+        assertTrue(result.get(0).getActionDate().isBefore(result.get(1).getActionDate()));
     }
 
     @Test
@@ -103,8 +101,8 @@ public class EstrusServiceTest {
         cow1.getEstruses().add(estrus3);
         doReturn(new ArrayList<>(Arrays.asList(cow1, cow2))).when(cowRepository).findAll();
         List<Estrus> result = estrusService.findLast();
-        assertEquals(result.get(0).getEstrusDate(), estrus3.getEstrusDate());
-        assertEquals(result.get(1).getEstrusDate(), estrus2.getEstrusDate());
+        assertEquals(result.get(0).getActionDate(), estrus3.getActionDate());
+        assertEquals(result.get(1).getActionDate(), estrus2.getActionDate());
     }
 
     @Test
@@ -120,7 +118,7 @@ public class EstrusServiceTest {
         cow1.getEstruses().add(estrus3);
         doReturn(Optional.of(cow1)).when(cowRepository).findById(cow1.getNumber());
         List<Estrus> result = estrusService.findByCow(cow1.getNumber());
-        assertEquals(result.get(0).getEstrusDate(), estrus1.getEstrusDate());
-        assertEquals(result.get(1).getEstrusDate(), estrus3.getEstrusDate());
+        assertEquals(result.get(0).getActionDate(), estrus1.getActionDate());
+        assertEquals(result.get(1).getActionDate(), estrus3.getActionDate());
     }
 }

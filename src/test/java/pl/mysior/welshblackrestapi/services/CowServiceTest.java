@@ -10,10 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
-import pl.mysior.welshblackrestapi.model.*;
+import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
