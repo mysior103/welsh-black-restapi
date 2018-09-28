@@ -35,7 +35,7 @@ public class CowController {
         Cow saved = cowService.save(cow);
         HttpHeaders header = new HttpHeaders();
         header.add("Method", "Created");
-        logger.info("Cow with number" + cow.getNumber() + "has been created");
+        logger.info("POST Cow with number" + cow.getNumber() + "has been created");
         return ResponseEntity.created(new URI("/cows/" + saved.getNumber()))
                 .headers(header)
                 .body(saved);
@@ -43,6 +43,7 @@ public class CowController {
 
     @GetMapping()
     public List<Cow> getAllCows() {
+        logger.info("GET List of all Cows has been returned");
         return cowService.findAll();
     }
 
@@ -50,6 +51,7 @@ public class CowController {
     @GetMapping("/{number}")
     public ResponseEntity<Cow> getCow(@PathVariable String number) {
         Cow foundCow = cowService.findByNumber(number);
+        logger.info("GET Cow with number" + number + "has been returned");
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(foundCow));
     }
 
@@ -59,8 +61,10 @@ public class CowController {
             Cow foundCow = cowService.findByNumber(cow.getNumber());
             if (foundCow != null) {
                 cowService.save(cow);
+                logger.info("PUT Cow with number" + cow.getNumber() + "has been changed");
             } else {
                 addCow(cow);
+                logger.warn("PUT Cow with number" + cow.getNumber() + "has been created");
             }
             HttpHeaders header = new HttpHeaders();
             header.add("Method", "Updated");
@@ -68,6 +72,7 @@ public class CowController {
                     .headers(header)
                     .body(cow);
         } else {
+            logger.error("PUT Couldn't find cow with number" + cow.getNumber());
             return ResponseEntity.badRequest().build();
         }
     }

@@ -14,8 +14,8 @@ public class HeaderUtilTest {
     @Test
     public void createAlert_ShouldReturnHeader(){
         HttpHeaders header = HeaderUtil.createAlert("message","param");
-        Assert.assertEquals(header.get("X-welsh-black-restapi-alert").toString(),"[message]");
-        Assert.assertEquals(header.get("X-welsh-black-restapi-params").toString(),"[param]");
+        Assert.assertEquals(header.get("Welsh-black-restapi-alert").toString(),"[message]");
+        Assert.assertEquals(header.get("Welsh-black-restapi-params").toString(),"[param]");
 
     }
 
@@ -23,28 +23,28 @@ public class HeaderUtilTest {
     public void createEntityCreationAlert_ShouldReturnHeader(){
         HttpHeaders header = HeaderUtil.createEntityCreationAlert("message","param");
 
-        Assert.assertTrue(header.get("X-welsh-black-restapi-alert").toString().contains(".created"));
-        Assert.assertEquals(header.get("X-welsh-black-restapi-params").toString(),"[param]");
+        Assert.assertTrue(header.get("Welsh-black-restapi-alert").toString().contains(".created"));
+        Assert.assertEquals(header.get("Welsh-black-restapi-params").toString(),"[param]");
     }
     @Test
     public void createEntityUpdateAlert_ShouldReturnHeader(){
         HttpHeaders header = HeaderUtil.createEntityUpdateAlert("message","param");
-        Assert.assertTrue(header.get("X-welsh-black-restapi-alert").toString().contains(".updated"));
-        Assert.assertEquals(header.get("X-welsh-black-restapi-params").toString(),"[param]");
+        Assert.assertTrue(header.get("Welsh-black-restapi-alert").toString().contains(".updated"));
+        Assert.assertEquals(header.get("Welsh-black-restapi-params").toString(),"[param]");
     }
 
     @Test
     public void createEntityDeletionAlert_ShouldReturnHeader(){
         HttpHeaders header = HeaderUtil.createEntityDeletionAlert("message","param");
-        Assert.assertTrue(header.get("X-welsh-black-restapi-alert").toString().contains(".deleted"));
-        Assert.assertEquals(header.get("X-welsh-black-restapi-params").toString(),"[param]");
+        Assert.assertTrue(header.get("Welsh-black-restapi-alert").toString().contains(".deleted"));
+        Assert.assertEquals(header.get("Welsh-black-restapi-params").toString(),"[param]");
     }
 
     @Test
     public void createFailureAlert_ShouldReturnHeader(){
         HttpHeaders header = HeaderUtil.createFailureAlert("name","errorKey","message");
-        Assert.assertTrue(header.get("X-welsh-black-restapi-error").toString().contains("error." + "errorKey"));
-        Assert.assertEquals(header.get("X-welsh-black-restapi-params").toString(),"[name]");
+        Assert.assertTrue(header.get("Welsh-black-restapi-error").toString().contains("error." + "errorKey"));
+        Assert.assertEquals(header.get("Welsh-black-restapi-params").toString(),"[name]");
     }
 
 }

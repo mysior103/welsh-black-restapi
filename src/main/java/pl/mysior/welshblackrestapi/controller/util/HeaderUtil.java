@@ -1,23 +1,19 @@
 package pl.mysior.welshblackrestapi.controller.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 
-/**
- * Utility class for HTTP headers creation.
- */
 public final class HeaderUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(HeaderUtil.class);
-
+    private static final Logger logger = LogManager.getLogger(HeaderUtil.class);
     private static final String APPLICATION_NAME = "welsh-black-restapi";
 
 
     public static HttpHeaders createAlert(String message, String param) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-welsh-black-restapi-alert", message);
-        headers.add("X-welsh-black-restapi-params", param);
+        headers.add("Welsh-black-restapi-alert", message);
+        headers.add("Welsh-black-restapi-params", param);
         return headers;
     }
 
@@ -34,9 +30,10 @@ public final class HeaderUtil {
     }
 
     public static HttpHeaders createFailureAlert(String entityName, String errorKey, String defaultMessage) {
+        logger.error("Failed processing with " + defaultMessage);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-welsh-black-restapi-error", "error." + errorKey);
-        headers.add("X-welsh-black-restapi-params", entityName);
+        headers.add("Welsh-black-restapi-error", "error." + errorKey);
+        headers.add("Welsh-black-restapi-params", entityName);
         return headers;
     }
 }
