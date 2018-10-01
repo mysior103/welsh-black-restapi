@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.services.CommentService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 import pl.mysior.welshblackrestapi.services.CowService;
 
 import javax.validation.Valid;
@@ -28,7 +28,7 @@ public class CommentController {
     @Autowired
     CowService cowService;
     @Autowired
-    CommentService commentService;
+    private CowActionService<Comment> commentService;
 
     @PostMapping(path = "/comments")
     public ResponseEntity<Cow> addComment(@Valid @RequestBody Comment comment) throws URISyntaxException {

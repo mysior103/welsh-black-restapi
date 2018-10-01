@@ -32,7 +32,7 @@ public class CommentServiceTest {
     private CowRepository cowRepository;
 
     @Autowired
-    private CommentService commentService;
+    private CowActionService<Comment> commentService;
 
     @Before
     public void before() {

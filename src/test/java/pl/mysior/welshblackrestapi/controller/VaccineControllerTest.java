@@ -17,7 +17,7 @@ import pl.mysior.welshblackrestapi.JsonMapper;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Vaccine;
-import pl.mysior.welshblackrestapi.services.VaccineService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class VaccineControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @MockBean
-    private VaccineService vaccineService;
+    private CowActionService<Vaccine> vaccineService;
 
     private String obtainToken() {
         String token = JWT.create().withSubject("username").withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

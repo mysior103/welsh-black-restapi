@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Vaccine;
-import pl.mysior.welshblackrestapi.services.VaccineService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,7 +21,7 @@ public class VaccineController {
     private static final String OPERATION = "Vaccine";
 
     @Autowired
-    private VaccineService vaccineService;
+    private CowActionService<Vaccine> vaccineService;
 
     @PostMapping(path = "/vaccines")
     public ResponseEntity<Cow> addVaccine(@Valid @RequestBody Vaccine vaccine) throws URISyntaxException {

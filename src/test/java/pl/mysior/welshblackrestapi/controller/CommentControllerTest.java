@@ -18,7 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.services.CommentService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 import pl.mysior.welshblackrestapi.services.CowService;
 
 import java.time.LocalDate;
@@ -56,7 +56,7 @@ public class CommentControllerTest {
     WebApplicationContext webApplicationContext;
 
     @MockBean
-    private CommentService commentService;
+    private CowActionService<Comment> commentService;
 
     @MockBean
     private CowService cowService;

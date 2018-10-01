@@ -33,7 +33,7 @@ public class DewormingServiceTest {
     private CowRepository cowRepository;
 
     @Autowired
-    private DewormingService dewormingService;
+    private CowActionService<Deworming> dewormingService;
 
     @Before
     public void before() {

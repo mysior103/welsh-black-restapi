@@ -76,4 +76,20 @@ public class CowController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/{motherNumber}/children")
+    public List<Cow> getChildren(@Valid @PathVariable String motherNumber){
+        List<Cow> children = cowService.findAllChildren(motherNumber);
+        logger.info("GET List of all children for cow " + motherNumber + " has been generated");
+        return children;
+    }
+
+
+    //TODO:
+    /*
+    Get predicted date of birth
+
+     */
+
+
 }

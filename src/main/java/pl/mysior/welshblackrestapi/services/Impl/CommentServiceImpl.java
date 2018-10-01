@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
-import pl.mysior.welshblackrestapi.services.CommentService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CommentServiceImpl implements CommentService {
+public class CommentServiceImpl implements CowActionService<Comment> {
 
     private final
     CowRepository cowRepository;

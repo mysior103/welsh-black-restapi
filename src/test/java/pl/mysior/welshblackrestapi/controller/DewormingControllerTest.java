@@ -17,7 +17,7 @@ import pl.mysior.welshblackrestapi.JsonMapper;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Deworming;
-import pl.mysior.welshblackrestapi.services.DewormingService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class DewormingControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @MockBean
-    private DewormingService dewormingService;
+    private CowActionService<Deworming> dewormingService;
 
     private String obtainToken() {
         String token = JWT.create().withSubject("username").withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

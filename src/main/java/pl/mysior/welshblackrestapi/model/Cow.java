@@ -21,9 +21,9 @@ public class Cow {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate birth_date;
-    private String mother_number;
-    private String father_number;
+    private LocalDate birthDate;
+    private String motherNumber;
+    private String fatherNumber;
     private String sex;
     private String color;
     private boolean active;
@@ -33,13 +33,13 @@ public class Cow {
     private List<Estrus> estruses;
     private List<Vaccine> vaccines;
 
-    public Cow(String number, String name, LocalDate birth_date, String mother_number, String father_number, String sex, String color, boolean active) {
+    public Cow(String number, String name, LocalDate birthDate, String motherNumber, String fatherNumber, String sex, String color, boolean active) {
 
         this.name = name;
         this.number = number;
-        this.birth_date = birth_date;
-        this.mother_number = mother_number;
-        this.father_number = father_number;
+        this.birthDate = birthDate;
+        this.motherNumber = motherNumber;
+        this.fatherNumber = fatherNumber;
         this.sex = sex;
         this.color = color;
         this.active = active;

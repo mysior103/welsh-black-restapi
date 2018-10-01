@@ -35,7 +35,7 @@ public class EstrusServiceTest {
     private CowRepository cowRepository;
 
     @Autowired
-    private EstrusService estrusService;
+    private CowActionService<Estrus> estrusService;
 
     @Before
     public void before() {

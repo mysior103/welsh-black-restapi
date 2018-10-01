@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
-import pl.mysior.welshblackrestapi.services.BloodTestService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BloodTestServiceImpl implements BloodTestService {
+public class BloodTestServiceImpl implements CowActionService<BloodTest> {
 
     @Autowired
     private CowRepository cowRepository;

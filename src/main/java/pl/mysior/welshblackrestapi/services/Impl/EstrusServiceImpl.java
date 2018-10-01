@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Estrus;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
-import pl.mysior.welshblackrestapi.services.EstrusService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.util.*;
 
 @Service
-public class EstrusServiceImpl implements EstrusService {
+public class EstrusServiceImpl implements CowActionService<Estrus> {
     @Autowired
     private CowRepository cowRepository;
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Estrus;
-import pl.mysior.welshblackrestapi.services.EstrusService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,7 +21,7 @@ public class EstrusController {
     private static final String OPERATION = "Estrus";
 
     @Autowired
-    private EstrusService estrusService;
+    private CowActionService<Estrus> estrusService;
 
     @PostMapping(path = "/estruses")
     public ResponseEntity<Cow> addEstruses(@Valid @RequestBody Estrus estrus) throws URISyntaxException {

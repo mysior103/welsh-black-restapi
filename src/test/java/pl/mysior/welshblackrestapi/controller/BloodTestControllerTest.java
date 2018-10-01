@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.services.BloodTestService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class BloodTestControllerTest {
     WebApplicationContext webApplicationContext;
 
     @MockBean
-    private BloodTestService bloodTestService;
+    private CowActionService<BloodTest> bloodTestService;
 
     private String obtainToken() {
         String token = JWT.create().withSubject("username").withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

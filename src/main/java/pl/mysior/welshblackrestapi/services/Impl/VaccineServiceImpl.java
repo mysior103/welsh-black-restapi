@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Vaccine;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
-import pl.mysior.welshblackrestapi.services.VaccineService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.util.*;
 
 @Service
-public class VaccineServiceImpl implements VaccineService {
+public class VaccineServiceImpl implements CowActionService<Vaccine> {
 
     @Autowired
     private CowRepository cowRepository;

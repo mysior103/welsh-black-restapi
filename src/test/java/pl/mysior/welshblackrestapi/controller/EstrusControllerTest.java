@@ -17,7 +17,7 @@ import pl.mysior.welshblackrestapi.JsonMapper;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.model.Estrus;
-import pl.mysior.welshblackrestapi.services.EstrusService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class EstrusControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @MockBean
-    private EstrusService estrusService;
+    private CowActionService<Estrus> estrusService;
 
     private String obtainToken() {
         String token = JWT.create().withSubject("username").withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

@@ -159,5 +159,19 @@ public class CowControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void getAllChildren_shouldReturnListOfAllChildren() throws Exception {
+        String motherNumber = "PL999";
+        Cow mother = new Cow();
+        mother.setNumber(motherNumber);
+        cow1.setMotherNumber(motherNumber);
+        cow2.setMotherNumber(motherNumber);
+        Mockito.when(cowService.findAllChildren(motherNumber)).thenReturn(Arrays.asList(cow1,cow2));
+        mockMvc.perform(get("/cows/" + motherNumber + "/children")
+                .header("Authorization", obtainToken())
+                .param("number", cow1.getNumber()))
+                .andExpect(jsonPath("$[0].number").value(cow1.getNumber()));
+    }
+
 
 }

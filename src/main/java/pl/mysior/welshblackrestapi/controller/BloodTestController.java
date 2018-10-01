@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
 import pl.mysior.welshblackrestapi.model.BloodTest;
 import pl.mysior.welshblackrestapi.model.Cow;
-import pl.mysior.welshblackrestapi.services.BloodTestService;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -24,7 +24,7 @@ public class BloodTestController {
     private static final String OPERATION = "BloodTest";
 
     @Autowired
-    private BloodTestService bloodTestservice;
+    private CowActionService<BloodTest> bloodTestService;
 
     @PostMapping(path = "/bloodtests")
     public ResponseEntity<Cow> addBloodTest(@Valid @RequestBody BloodTest bloodTest) throws URISyntaxException {
@@ -32,7 +32,7 @@ public class BloodTestController {
             logger.error("POST Lack of cow number");
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(OPERATION, "null", "Lack of cow number")).body(null);
         } else {
-            Cow saved = bloodTestservice.save(bloodTest);
+            Cow saved = bloodTestService.save(bloodTest);
             if (saved == null) {
                 logger.warn("POST Cow with number " + bloodTest.getCowNumber() + " couldn't find");
                 return ResponseEntity.notFound().headers(HeaderUtil.createFailureAlert(OPERATION, "Not found", "Cow does not exist")).build();
@@ -48,19 +48,19 @@ public class BloodTestController {
     @GetMapping(path = "/bloodtests")
     public List<BloodTest> getAllBloodTests() {
         logger.info("GET List of all blood tests has been generated");
-        return bloodTestservice.findAll();
+        return bloodTestService.findAll();
     }
 
     @GetMapping(path = "/{cowNumber}/bloodtests")
     public List<BloodTest> getBloodTests(@PathVariable String cowNumber) {
         logger.info("GET List of all blood tests for "+cowNumber + " has been generated");
-        return bloodTestservice.findByCow(cowNumber);
+        return bloodTestService.findByCow(cowNumber);
     }
 
     @GetMapping(path = "/bloodtests/last")
     public List<BloodTest> getLastBloodTests() {
         logger.info("GET List of latest blood tests has been generated");
-        return bloodTestservice.findLast();
+        return bloodTestService.findLast();
     }
 
 }

@@ -1,4 +1,4 @@
-package pl.mysior.welshblackrestapi.services.Impl;
+package pl.mysior.welshblackrestapi.services;
 
 import pl.mysior.welshblackrestapi.model.Cow;
 

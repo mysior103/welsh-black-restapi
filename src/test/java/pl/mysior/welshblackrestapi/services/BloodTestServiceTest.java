@@ -34,7 +34,7 @@ public class BloodTestServiceTest {
     private CowRepository cowRepository;
 
     @Autowired
-    private BloodTestService bloodTestService;
+    private CowActionService<BloodTest> bloodTestService;
 
     @Before
     public void before() {
