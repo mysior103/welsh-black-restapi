@@ -56,7 +56,7 @@ public class CowController {
 
     @PutMapping
     public ResponseEntity<Cow> updateCow(@Valid @RequestBody Cow cow) throws URISyntaxException {
-        if (cow.getNumber() != "") {
+        if (!cow.getNumber().equals("")) {
             Cow foundCow = cowService.findByNumber(cow.getNumber());
             if (foundCow != null) {
                 cowService.save(cow);
@@ -73,13 +73,12 @@ public class CowController {
         }
     }
 
-    @GetMapping("/{motherNumber}/children")
-    public List<Cow> getChildren(@Valid @PathVariable String motherNumber){
-        List<Cow> children = cowService.findAllChildren(motherNumber);
-        logger.info("GET List of all children for cow " + motherNumber + " has been generated");
+    @GetMapping("/{parentNumber}/children")
+    public List<Cow> getChildren(@Valid @PathVariable String parentNumber){
+        List<Cow> children = cowService.findAllChildren(parentNumber);
+        logger.info("GET List of all children for cow " + parentNumber + " has been generated");
         return children;
     }
-
 
     //TODO:
     /*

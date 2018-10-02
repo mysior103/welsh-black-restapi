@@ -20,12 +20,12 @@ public class CowServiceImpl implements CowService {
     CowRepository cowRepository;
 
     @Autowired
-    public CowServiceImpl(CowRepository cowRepository) {
+    public CowServiceImpl(CowRepository cowRepository, MongoTemplate mongoTemplate) {
         this.cowRepository = cowRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public Cow save(Cow cow) {
@@ -57,9 +57,12 @@ public class CowServiceImpl implements CowService {
     }
 
     @Override
-    public List<Cow> findAllChildren(String motherNumber) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("motherNumber").is(motherNumber));
+    public List<Cow> findAllChildren(String parentNumber) {
+        Criteria motherCriteria = Criteria.where("motherNumber").is(parentNumber);
+        Criteria fatherCriteria = Criteria.where("fatherNumber").is(parentNumber);
+        Query query = new Query(new Criteria().orOperator(motherCriteria,fatherCriteria));
         return mongoTemplate.find(query, Cow.class);
     }
+
+
 }

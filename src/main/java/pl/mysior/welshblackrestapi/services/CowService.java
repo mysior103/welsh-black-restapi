@@ -12,5 +12,5 @@ public interface CowService {
 
     Cow deleteByNumber(String number);
 
-    List<Cow> findAllChildren(String motherNumber);
+    List<Cow> findAllChildren(String parentNumber);
 }
