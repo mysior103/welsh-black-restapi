@@ -2,6 +2,7 @@ package pl.mysior.welshblackrestapi.services;
 
         import pl.mysior.welshblackrestapi.model.Cow;
 
+        import java.time.LocalDate;
         import java.util.List;
 public interface CowService {
     Cow save(Cow cow);
@@ -13,4 +14,8 @@ public interface CowService {
     Cow deleteByNumber(String number);
 
     List<Cow> findAllChildren(String parentNumber);
+
+    List<String> findNearestBirthForAll();
+
+    LocalDate findNearestBirthForCow(String cowNumber);
 }
