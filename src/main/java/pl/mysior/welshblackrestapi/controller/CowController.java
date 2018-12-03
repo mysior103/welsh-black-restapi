@@ -64,6 +64,7 @@ public class CowController {
     @PutMapping
     public ResponseEntity<Void> updateCow(@Valid @RequestBody CowDTO cowDTO) throws URISyntaxException {
         if (!cowDTO.getNumber().equals("")) {
+
             HttpHeaders header = new HttpHeaders();
             header.add("Method", "Updated");
             logger.info("Cow with number" + cowDTO.getNumber() + "has been updated");
@@ -75,13 +76,13 @@ public class CowController {
 
     }
 
-    @GetMapping("/{motherNumber}/children")
-    public List<Cow> getChildren(@Valid @PathVariable String motherNumber) {
-        List<Cow> children = cowService.findAllChildren(motherNumber);
-        logger.info("GET List of all children for cow " + motherNumber + " has been generated");
+
+    @GetMapping("/{parentNumber}/children")
+    public List<Cow> getChildren(@Valid @PathVariable String parentNumber) {
+        List<Cow> children = cowService.findAllChildren(parentNumber);
+        logger.info("GET List of all children for cow " + parentNumber + " has been generated");
         return children;
     }
-
 
     //TODO:
     /*

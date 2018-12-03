@@ -4,7 +4,9 @@ import pl.mysior.welshblackrestapi.exception.CowNotFoundException;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.services.DTO.CowDTO;
 
+import java.time.LocalDate;
 import java.util.List;
+
 public interface CowService {
     void save(CowDTO cowDTO);
 
@@ -16,5 +18,9 @@ public interface CowService {
 
     Cow deleteByNumber(String number);
 
-    List<Cow> findAllChildren(String motherNumber);
+    List<Cow> findAllChildren(String parentNumber);
+
+    List<String> findNearestBirthForAll();
+
+    LocalDate findNearestBirthForCow(String cowNumber);
 }

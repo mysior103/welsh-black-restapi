@@ -7,27 +7,36 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import pl.mysior.welshblackrestapi.exception.CowNotFoundException;
 import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.model.Estrus;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
+import pl.mysior.welshblackrestapi.services.CowActionService;
 import pl.mysior.welshblackrestapi.services.CowService;
 import pl.mysior.welshblackrestapi.services.DTO.CowDTO;
 import pl.mysior.welshblackrestapi.services.Mapper.CowMapper;
 
+import java.time.Clock;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CowServiceImpl implements CowService {
 
-    private final
-    CowRepository cowRepository;
+    private final CowRepository cowRepository;
+    private final MongoTemplate mongoTemplate;
+    private Clock clock = Clock.systemDefaultZone();
+
 
     @Autowired
-    public CowServiceImpl(CowRepository cowRepository) {
+    private CowActionService<Estrus> estrusService;
+
+    @Autowired
+    public CowServiceImpl(CowRepository cowRepository, MongoTemplate mongoTemplate) {
         this.cowRepository = cowRepository;
+        this.mongoTemplate = mongoTemplate;
     }
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @Override
     public void save(CowDTO cowDTO) {
@@ -63,9 +72,29 @@ public class CowServiceImpl implements CowService {
     }
 
     @Override
-    public List<Cow> findAllChildren(String motherNumber) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("motherNumber").is(motherNumber));
+    public List<Cow> findAllChildren(String parentNumber) {
+        Criteria motherCriteria = Criteria.where("motherNumber").is(parentNumber);
+        Criteria fatherCriteria = Criteria.where("fatherNumber").is(parentNumber);
+        Query query = new Query(new Criteria().orOperator(motherCriteria, fatherCriteria));
         return mongoTemplate.find(query, Cow.class);
+    }
+
+    @Override
+    public List<String> findNearestBirthForAll() {
+        List<Estrus> allEstruses = estrusService.findLast();
+        List<String> results = new ArrayList<>();
+        for (Estrus e : allEstruses) {
+            if (e.getActionDate().plusMonths(10).isAfter(LocalDate.now(clock))) {
+                results.add(e.getCowNumber() + " " + e.getActionDate().toString());
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public LocalDate findNearestBirthForCow(String cowNumber) {
+        List<Estrus> allEstruses = estrusService.findByCow(cowNumber);
+        Collections.sort(allEstruses, Collections.reverseOrder());
+        return allEstruses.get(0).getActionDate();
     }
 }
