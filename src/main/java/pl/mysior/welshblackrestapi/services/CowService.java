@@ -1,14 +1,18 @@
 package pl.mysior.welshblackrestapi.services;
 
-        import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.exception.CowNotFoundException;
+import pl.mysior.welshblackrestapi.model.Cow;
+import pl.mysior.welshblackrestapi.services.DTO.CowDTO;
 
-        import java.util.List;
+import java.util.List;
 public interface CowService {
-    Cow save(Cow cow);
+    void save(CowDTO cowDTO);
+
+    void update(CowDTO cowDTO) throws CowNotFoundException;
 
     List<Cow> findAll();
 
-    Cow findByNumber(String number);
+    CowDTO findByNumber(String number) throws CowNotFoundException;
 
     Cow deleteByNumber(String number);
 

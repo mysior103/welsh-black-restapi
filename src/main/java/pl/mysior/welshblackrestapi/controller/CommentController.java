@@ -3,18 +3,20 @@ package pl.mysior.welshblackrestapi.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mysior.welshblackrestapi.controller.util.HeaderUtil;
+import pl.mysior.welshblackrestapi.exception.CowNotFoundException;
 import pl.mysior.welshblackrestapi.model.Comment;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.services.CowActionService;
 import pl.mysior.welshblackrestapi.services.CowService;
+import pl.mysior.welshblackrestapi.services.DTO.CowDTO;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -57,12 +59,13 @@ public class CommentController {
     }
 
     @GetMapping("/{number}/comments")
-    public List<Comment> getComments(@PathVariable String number) {
-        Cow foundCow = cowService.findByNumber(number);
-        if (foundCow != null) {
-            return foundCow.getComments();
-        } else {
-            return new ArrayList<>();
+    public ResponseEntity<List<Comment>> getComments(@PathVariable String number) {
+        try {
+            CowDTO foundCow = cowService.findByNumber(number);
+            return ResponseEntity.status(HttpStatus.OK).body(foundCow.getComments());
+        } catch (CowNotFoundException e) {
+            logger.info("Could not find cow with number: ", number);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

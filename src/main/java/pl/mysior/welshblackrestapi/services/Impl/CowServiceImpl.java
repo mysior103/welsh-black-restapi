@@ -5,11 +5,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import pl.mysior.welshblackrestapi.exception.CowNotFoundException;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.repository.CowRepository;
 import pl.mysior.welshblackrestapi.services.CowService;
+import pl.mysior.welshblackrestapi.services.DTO.CowDTO;
+import pl.mysior.welshblackrestapi.services.Mapper.CowMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +30,13 @@ public class CowServiceImpl implements CowService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public Cow save(Cow cow) {
-        cowRepository.save(cow);
-        return cow;
+    public void save(CowDTO cowDTO) {
+        cowRepository.save(CowMapper.toEntity(cowDTO));
+    }
+
+    @Override
+    public void update(CowDTO cowDTO) throws CowNotFoundException {
+        cowRepository.save(CowMapper.toEntity(cowDTO));
     }
 
     @Override
@@ -39,9 +45,9 @@ public class CowServiceImpl implements CowService {
     }
 
     @Override
-    public Cow findByNumber(String number) {
-        Optional<Cow> cowOptional = cowRepository.findById(number);
-        return cowOptional.orElse(null);
+    public CowDTO findByNumber(String number) throws CowNotFoundException {
+        Cow foundCow = cowRepository.findById(number).orElseThrow(() -> new CowNotFoundException(number));
+        return CowMapper.toDto(foundCow);
     }
 
     @Override

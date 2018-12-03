@@ -19,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.mysior.welshblackrestapi.TestObjectFactory;
 import pl.mysior.welshblackrestapi.model.Cow;
 import pl.mysior.welshblackrestapi.services.CowService;
+import pl.mysior.welshblackrestapi.services.Mapper.CowMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,16 +76,12 @@ public class CowControllerTest {
     }
 
     @Test
-    public void addCow_ShouldReturnRepresentationOfCreatedEntity() throws Exception {
-
-        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
+    public void addCow_ShouldReturnCreatedStatus() throws Exception {
         mockMvc.perform(post("/cows/")
                 .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(cow1)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.number").value(cow1.getNumber()))
-                .andExpect(jsonPath("$.name").value(cow1.getName()));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -106,7 +103,7 @@ public class CowControllerTest {
 
     @Test
     public void getCow_ShouldReturnRequestedCowByNumber() throws Exception {
-        Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(cow1);
+        Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(CowMapper.toDto(cow1));
         mockMvc.perform(get("/cows/" + cow1.getNumber())
                 .header("Authorization", obtainToken())
                 .param("number", cow1.getNumber()))
@@ -115,39 +112,31 @@ public class CowControllerTest {
 
     @Test
     public void updateCow_ShouldReturnUpdatedCowIfPresent() throws Exception {
-        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
         mockMvc.perform(post("/cows/")
                 .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(cow1)))
-                .andExpect(jsonPath("$.name").value(cow1.getName()))
-                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+                .andExpect(status().isCreated());
 
         cow1.setName("ChangedName");
-        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
         mockMvc.perform(put("/cows/")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapToJson(cow1)))
-                .andExpect(jsonPath("$.name").value(cow1.getName()))
-                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+                .content(mapToJson(cow1))).andExpect(status().isOk());
     }
 
     @Test
     public void updateCow_ShouldReturnCreateNewCowIfNotExist() throws Exception {
-        Mockito.when(cowService.save(cow1)).thenReturn(cow1);
         mockMvc.perform(post("/cows/")
                 .header("Authorization", obtainToken())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(cow1)))
-                .andExpect(jsonPath("$.name").value(cow1.getName()))
-                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
-        Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(cow1);
+                .andExpect(status().isCreated());
+        Mockito.when(cowService.findByNumber(cow1.getNumber())).thenReturn(CowMapper.toDto(cow1));
         cow1.setName("ChangedName");
         mockMvc.perform(put("/cows/")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapToJson(cow1)))
-                .andExpect(jsonPath("$.name").value(cow1.getName()))
-                .andExpect(jsonPath("$.number").value(cow1.getNumber()));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -166,7 +155,7 @@ public class CowControllerTest {
         mother.setNumber(motherNumber);
         cow1.setMotherNumber(motherNumber);
         cow2.setMotherNumber(motherNumber);
-        Mockito.when(cowService.findAllChildren(motherNumber)).thenReturn(Arrays.asList(cow1,cow2));
+        Mockito.when(cowService.findAllChildren(motherNumber)).thenReturn(Arrays.asList(cow1, cow2));
         mockMvc.perform(get("/cows/" + motherNumber + "/children")
                 .header("Authorization", obtainToken())
                 .param("number", cow1.getNumber()))
